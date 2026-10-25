@@ -1,0 +1,5 @@
+Model Name,Confidence,Obs / Exceptions,Kupiec POF p-val,Independence p-val,Conditional Coverage,Basel Traffic Light,Capital Multiplier
+Historical VaR (99%),99%,702 / 10 (Exp: 7.0),0.2879 (Pass),0.0058 (Fail),0.0127 (Fail),GREEN (Acceptable),3.00x
+Gaussian VaR (99%),99%,702 / 11 (Exp: 7.0),0.1633 (Pass),0.0091 (Fail),0.0126 (Fail),YELLOW (Supervisory Monitoring),3.40x
+Student_t VaR (99%),99%,702 / 11 (Exp: 7.0),0.1633 (Pass),0.0091 (Fail),0.0126 (Fail),YELLOW (Supervisory Monitoring),3.40x
+Evt VaR (99%),99%,702 / 10 (Exp: 7.0),0.2879 (Pass),0.0058 (Fail),0.0127 (Fail),GREEN (Acceptable),3.00x
