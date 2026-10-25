@@ -153,6 +153,31 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+def render_high_contrast_table(df: pd.DataFrame) -> str:
+    """Generate high-contrast, fully visible institutional HTML table."""
+    html = ['<div style="overflow-x: auto; border-radius: 8px; border: 1px solid rgba(148,163,184,0.3); margin: 12px 0 20px 0; background-color: #0f172a;">']
+    html.append('<table style="width: 100%; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.84rem; color: #f8fafc; background-color: #0f172a; text-align: left;">')
+    html.append('<thead><tr style="background-color: #1e293b; border-bottom: 2px solid #38bdf8;">')
+    for col in df.columns:
+        align = "left" if col == df.columns[0] else "right"
+        html.append(f'<th style="padding: 10px 12px; font-weight: 700; color: #f8fafc; text-align: {align}; white-space: nowrap;">{col}</th>')
+    html.append('</tr></thead><tbody>')
+    for i, row in df.iterrows():
+        bg = "#1e293b" if i % 2 == 1 else "#0f172a"
+        html.append(f'<tr style="background-color: {bg}; border-bottom: 1px solid rgba(148,163,184,0.15);">')
+        for j, val in enumerate(row):
+            align = "left" if j == 0 else "right"
+            color = "#38bdf8" if j == 0 else "#f1f5f9"
+            if "%" in str(val) and "-" in str(val):
+                color = "#f87171"
+            elif "%" in str(val) and j in [1, 2]:
+                color = "#34d399"
+            html.append(f'<td style="padding: 9px 12px; text-align: {align}; color: {color}; white-space: nowrap; font-variant-numeric: tabular-nums;">{val}</td>')
+        html.append('</tr>')
+    html.append('</tbody></table></div>')
+    return "".join(html)
+
+
 # ---------------------------------------------------------------------------
 # Cached Data & Computations
 # ---------------------------------------------------------------------------
@@ -409,9 +434,18 @@ with tab_tear:
 
         fig_wealth.update_layout(
             template="plotly_dark",
-            height=480,
-            margin=dict(l=40, r=20, t=40, b=20),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            height=500,
+            margin=dict(l=40, r=20, t=70, b=20),
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.12,
+                xanchor="center",
+                x=0.5,
+                bgcolor="rgba(15,23,42,0.85)",
+                bordercolor="rgba(148,163,184,0.3)",
+                borderwidth=1,
+            ),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(15,23,42,0.6)",
         )
@@ -443,7 +477,14 @@ with tab_tear:
     st.markdown("### Institutional Risk & Performance Matrix")
     suite = build_standard_portfolios_suite(md.simple_returns, risk_free_series=md.risk_free_daily)
     kpis_all = [suite[p][1].to_dict() for p in suite]
-    st.dataframe(pd.DataFrame(kpis_all), use_container_width=True)
+    df_kpis = pd.DataFrame(kpis_all)
+    
+    # High-contrast custom HTML rendering ensuring full visibility across all themes
+    st.markdown(render_high_contrast_table(df_kpis), unsafe_allow_html=True)
+    
+    # Interactive dataframe expander for sorting and exploring
+    with st.expander("📊 View Interactive Dataframe (Sort & Filter Columns)"):
+        st.dataframe(df_kpis, use_container_width=True, hide_index=True)
 
 
 # ===========================================================================

@@ -88,21 +88,21 @@ $H_0: \gamma = 0$ (Unit root exists -> Non-Stationary $I(1)$)
 $H_1: \gamma < 0$ (Stationary $I(0)$)
 
 ```
-Ticker            Series  ADF Statistic    p-value  Critical 1%  Critical 5%  Stationary (5%) Order of Integration
-   SPY Log Price ln(P_t)         0.6396 9.8855e-01      -3.4316      -2.8621            False       I(1) Unit Root
-   SPY    Log Return r_t       -16.2786 3.4304e-29      -3.4316      -2.8621             True      I(0) Stationary
-   EFA Log Price ln(P_t)        -0.5089 8.9027e-01      -3.4316      -2.8621            False       I(1) Unit Root
-   EFA    Log Return r_t       -15.7019 1.3929e-28      -3.4316      -2.8621             True      I(0) Stationary
-   EEM Log Price ln(P_t)        -1.6025 4.8232e-01      -3.4316      -2.8621            False       I(1) Unit Root
-   EEM    Log Return r_t       -15.8520 9.4242e-29      -3.4316      -2.8621             True      I(0) Stationary
-   AGG Log Price ln(P_t)        -2.1647 2.1929e-01      -3.4316      -2.8621            False       I(1) Unit Root
-   AGG    Log Return r_t       -15.3816 3.4019e-28      -3.4316      -2.8621             True      I(0) Stationary
-   GLD Log Price ln(P_t)        -0.8001 8.1909e-01      -3.4316      -2.8621            False       I(1) Unit Root
-   GLD    Log Return r_t       -73.6040 0.0000e+00      -3.4316      -2.8621             True      I(0) Stationary
-   XLE Log Price ln(P_t)        -0.8871 7.9220e-01      -3.4316      -2.8621            False       I(1) Unit Root
-   XLE    Log Return r_t       -76.4927 0.0000e+00      -3.4316      -2.8621             True      I(0) Stationary
-   XLK Log Price ln(P_t)         1.0385 9.9466e-01      -3.4316      -2.8621            False       I(1) Unit Root
-   XLK    Log Return r_t       -17.9873 2.7619e-30      -3.4316      -2.8621             True      I(0) Stationary
+Ticker            Series  ADF Statistic  p-value  Critical 1%  Critical 5%  Stationary (5%) Order of Integration
+   SPY Log Price ln(P_t)         0.5303  0.98576      -3.4316      -2.8621            False       I(1) Unit Root
+   SPY    Log Return r_t       -54.7434  0.00000      -3.4316      -2.8621             True      I(0) Stationary
+   EFA Log Price ln(P_t)        -0.5441  0.88312      -3.4316      -2.8621            False       I(1) Unit Root
+   EFA    Log Return r_t       -54.1256  0.00000      -3.4316      -2.8621             True      I(0) Stationary
+   EEM Log Price ln(P_t)        -1.8928  0.33547      -3.4316      -2.8621            False       I(1) Unit Root
+   EEM    Log Return r_t       -56.8100  0.00000      -3.4316      -2.8621             True      I(0) Stationary
+   AGG Log Price ln(P_t)        -2.0201  0.27782      -3.4316      -2.8621            False       I(1) Unit Root
+   AGG    Log Return r_t       -56.3502  0.00000      -3.4316      -2.8621             True      I(0) Stationary
+   GLD Log Price ln(P_t)        -0.7716  0.82732      -3.4316      -2.8621            False       I(1) Unit Root
+   GLD    Log Return r_t       -52.3454  0.00000      -3.4316      -2.8621             True      I(0) Stationary
+   XLE Log Price ln(P_t)        -0.8871  0.79220      -3.4316      -2.8621            False       I(1) Unit Root
+   XLE    Log Return r_t       -53.2760  0.00000      -3.4316      -2.8621             True      I(0) Stationary
+   XLK Log Price ln(P_t)         0.9698  0.99394      -3.4316      -2.8621            False       I(1) Unit Root
+   XLK    Log Return r_t       -54.1131  0.00000      -3.4316      -2.8621             True      I(0) Stationary
 ```
 
 **Mathematical Conclusion:**  
@@ -122,8 +122,8 @@ $$\min_w \quad w^T \Sigma w \quad \text{s.t.} \quad w^T \mathbf{1} = 1, \quad w_
 ```
                           Portfolio   CAGR Annual Volatility Sharpe Ratio (Rf) Downside Volatility Sortino Ratio CAPM Beta (vs SPY) Max Drawdown (MDD) End Wealth ($10M AUM)
 Serendib Conservative (Recommended)  7.91%            11.31%             0.578               8.00%         0.818              0.528            -31.05%        $48,556,769.19
-               Markowitz Max Sharpe 14.55%            15.66%             0.837              10.91%         1.201              0.637            -34.94%       $167,792,963.67
-                   Minimum Variance  3.70%             5.08%             0.402               3.74%         0.547              0.070            -16.74%        $21,240,321.01
+               Markowitz Max Sharpe 14.55%            15.66%             0.837              10.91%         1.201              0.637            -34.94%       $167,792,962.30
+                   Minimum Variance  3.70%             5.08%             0.402               3.74%         0.547              0.070            -16.74%        $21,240,321.00
             Classic 60/40 Benchmark  8.25%            11.71%             0.589               8.25%         0.836              0.600            -34.70%        $51,838,705.31
                  Equal Weight (1/N)  9.60%            16.11%             0.543              11.38%         0.769              0.776            -42.35%        $67,031,829.55
 ```
