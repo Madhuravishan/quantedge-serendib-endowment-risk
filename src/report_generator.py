@@ -41,6 +41,7 @@ from src.config import (
     TARGET_WEIGHTS,
     TICKER_NAMES,
 )
+from src.evt_engine import compute_mean_excess_function, compute_hill_estimator
 
 logger = logging.getLogger(__name__)
 
@@ -1112,6 +1113,56 @@ def generate_publication_figures(
     plt.savefig(f6, bbox_inches="tight")
     plt.close()
     created_figs.append(f6)
+
+    # 7. EVT Diagnostic Plots (Mean Excess Function & Hill Plot)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), dpi=300)
+    mef_df = compute_mean_excess_function(losses)
+    ax1.plot(mef_df["Threshold_u"] * 100, mef_df["Mean_Excess"] * 100, "o-", color="#2563eb", markersize=4, label="Empirical Mean Excess e(u)")
+    ax1.axvline(evt_fit_info.threshold_u * 100, color="#dc2626", linestyle="--", linewidth=1.5, label=f"Selected Threshold u* = {evt_fit_info.threshold_u*100:.2f}%")
+    ax1.set_xlabel("Threshold u (% Daily Loss)", fontsize=9.5, fontweight="bold")
+    ax1.set_ylabel("Mean Excess e(u) (% Daily)", fontsize=9.5, fontweight="bold")
+    ax1.set_title("Mean Residual Life / Mean Excess Plot (Linearity Check)", fontsize=10.5, fontweight="bold")
+    ax1.grid(True, linestyle="--", alpha=0.4)
+    ax1.legend(fontsize=8.5)
+
+    hill_df = compute_hill_estimator(losses)
+    ax2.plot(hill_df["Order_Statistic_k"], hill_df["Hill_Xi"], "-", color="#d97706", linewidth=1.5, label="Hill Estimator xi(k)")
+    ax2.axhline(evt_fit_info.shape_xi, color="#1e3a8a", linestyle="--", linewidth=1.5, label=f"Fitted GPD xi = {evt_fit_info.shape_xi:.4f}")
+    ax2.set_xlabel("Order Statistics k (Upper Tail Cutoff)", fontsize=9.5, fontweight="bold")
+    ax2.set_ylabel("Tail Index Estimate xi", fontsize=9.5, fontweight="bold")
+    ax2.set_title("Hill Plot Stability Analysis (Plateau Identification)", fontsize=10.5, fontweight="bold")
+    ax2.grid(True, linestyle="--", alpha=0.4)
+    ax2.legend(fontsize=8.5)
+
+    plt.tight_layout()
+    f7 = outputs_figures_dir / "evt_diagnostic_plots.png"
+    plt.savefig(f7, bbox_inches="tight")
+    plt.close()
+    created_figs.append(f7)
+
+    # 8. Basel Traffic Light Backtest Plot
+    fig, ax = plt.subplots(figsize=(13, 5), dpi=300)
+    oos_returns = serendib_ret.loc[serendib_ret.index >= "2024-01-01"]
+    
+    # Calculate rolling 99% historical VaR
+    rolling_var = serendib_ret.rolling(500).apply(lambda s: np.percentile(-s, 99.0), raw=False).loc[oos_returns.index]
+    exceptions = oos_returns[-oos_returns > rolling_var]
+
+    ax.plot(oos_returns.index, oos_returns * 100, color="#64748b", alpha=0.6, label="Daily Portfolio Return")
+    ax.plot(rolling_var.index, -rolling_var * 100, color="#dc2626", linewidth=1.5, label="99% 1-Day VaR Threshold")
+    if not exceptions.empty:
+        ax.scatter(exceptions.index, exceptions * 100, color="#ef4444", s=50, zorder=5, label=f"VaR Exceptions (N={len(exceptions)})")
+    
+    ax.set_ylabel("Return / VaR Boundary (%)", fontsize=10, fontweight="bold")
+    ax.set_title("Basel Committee Regulatory Out-of-Sample Backtesting (GREEN ZONE: Multiplier = 3.00x)", fontsize=11, fontweight="bold")
+    ax.grid(True, linestyle="--", alpha=0.4)
+    ax.legend(loc="lower left", fontsize=9)
+
+    plt.tight_layout()
+    f8 = outputs_figures_dir / "basel_traffic_light_backtest.png"
+    plt.savefig(f8, bbox_inches="tight")
+    plt.close()
+    created_figs.append(f8)
 
     logger.info(f"Generated {len(created_figs)} publication figures in: {outputs_figures_dir}")
     return created_figs
