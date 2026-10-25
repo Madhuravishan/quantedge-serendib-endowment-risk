@@ -1,0 +1,15 @@
+Ticker,Series,ADF Statistic,p-value,Critical 1%,Critical 5%,Stationary (5%),Order of Integration
+SPY,Log Price ln(P_t),0.5303,9.8576e-01,-3.4316,-2.8621,False,I(1) Unit Root
+SPY,Log Return r_t,-54.7434,0.0000e+00,-3.4316,-2.8621,True,I(0) Stationary
+EFA,Log Price ln(P_t),-0.5441,8.8312e-01,-3.4316,-2.8621,False,I(1) Unit Root
+EFA,Log Return r_t,-54.1256,0.0000e+00,-3.4316,-2.8621,True,I(0) Stationary
+EEM,Log Price ln(P_t),-1.8928,3.3547e-01,-3.4316,-2.8621,False,I(1) Unit Root
+EEM,Log Return r_t,-56.81,0.0000e+00,-3.4316,-2.8621,True,I(0) Stationary
+AGG,Log Price ln(P_t),-2.0201,2.7782e-01,-3.4316,-2.8621,False,I(1) Unit Root
+AGG,Log Return r_t,-56.3502,0.0000e+00,-3.4316,-2.8621,True,I(0) Stationary
+GLD,Log Price ln(P_t),-0.7716,8.2732e-01,-3.4316,-2.8621,False,I(1) Unit Root
+GLD,Log Return r_t,-52.3454,0.0000e+00,-3.4316,-2.8621,True,I(0) Stationary
+XLE,Log Price ln(P_t),-0.8871,7.9220e-01,-3.4316,-2.8621,False,I(1) Unit Root
+XLE,Log Return r_t,-53.276,0.0000e+00,-3.4316,-2.8621,True,I(0) Stationary
+XLK,Log Price ln(P_t),0.9698,9.9394e-01,-3.4316,-2.8621,False,I(1) Unit Root
+XLK,Log Return r_t,-54.1131,0.0000e+00,-3.4316,-2.8621,True,I(0) Stationary

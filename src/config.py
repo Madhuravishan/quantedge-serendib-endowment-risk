@@ -4,6 +4,14 @@ Mandate: The Serendib University Endowment Fund (USD 10,000,000 AUM)
 QuantEdge 1.0 National STEM Competition - Team 'Pandas Predictors'
 """
 
+import os
+# Prevent OpenBLAS / MKL / OMP memory allocation errors on Windows
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
+
 from pathlib import Path
 from typing import Dict, List
 
