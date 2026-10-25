@@ -776,8 +776,12 @@ with tab_var:
     st.markdown("### ⚠️ Model Disagreement & The Gaussian Blindspot (Tail Gap Analysis)")
     
     # Compute active EVT metrics for model disagreement
-    evt_fit_active = fit_gpd_pot(port_ret, threshold_percentile=0.95)
-    evt_m_active = compute_evt_risk_metrics(evt_fit_active, confidence_levels=[conf_level], aum=aum)[conf_level]
+    evt_m_active, evt_fit_active = compute_evt_risk_metrics(
+        returns_series=port_ret,
+        confidence_level=conf_level,
+        threshold_percentile=0.95,
+        aum=aum,
+    )
     
     gauss_loss = active_var.parametric_gaussian_var * aum
     hist_loss = active_var.historical_var * aum

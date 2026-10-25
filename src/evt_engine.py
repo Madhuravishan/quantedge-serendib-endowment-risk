@@ -26,7 +26,7 @@ Key Mathematical & Institutional Foundations:
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 import logging
 
 import numpy as np
@@ -210,13 +210,29 @@ def fit_gpd_pot(
     return fit_res, excesses
 
 
+class EVTMetricsTuple(tuple):
+    """
+    Tuple containing (EVTRiskMetrics, EVTFitResult) with support for dict-like confidence indexing.
+    Allows both tuple unpacking: (m, fit) = compute_evt_risk_metrics(...)
+    and dict-style confidence access: compute_evt_risk_metrics(...)[0.99]
+    """
+    def __getitem__(self, item):
+        if isinstance(item, (float, int)):
+            # Lookup by confidence level
+            if abs(float(item) - self[0].confidence) < 1e-4:
+                return self[0]
+            raise KeyError(f"Confidence {item} not found in EVTMetricsTuple (contains {self[0].confidence}).")
+        return super().__getitem__(item)
+
+
 def compute_evt_risk_metrics(
-    returns_series: pd.Series,
-    confidence_level: float = 0.99,
+    returns_series: Any,
+    confidence_level: Optional[float] = None,
     threshold_percentile: float = EVT_DEFAULT_PERCENTILE_THRESHOLD,
     threshold_u: Optional[float] = None,
     aum: float = MANDATE_SIZE_USD,
-) -> Tuple[EVTRiskMetrics, EVTFitResult]:
+    confidence_levels: Optional[List[float]] = None,
+) -> EVTMetricsTuple:
     """
     Calculate EVT-based Value-at-Risk (VaR) and Expected Shortfall (ES).
     
@@ -234,14 +250,31 @@ def compute_evt_risk_metrics(
        
     Returns
     -------
-    Tuple[EVTRiskMetrics, EVTFitResult]
-        (risk_metrics, fit_summary)
+    EVTMetricsTuple
+        (risk_metrics, fit_summary) supporting both tuple unpacking and dict confidence access.
     """
-    fit_res, _ = fit_gpd_pot(
-        returns_series=returns_series,
-        threshold_percentile=threshold_percentile,
-        threshold_u=threshold_u,
-    )
+    if confidence_level is None:
+        if confidence_levels is not None:
+            if isinstance(confidence_levels, list) and len(confidence_levels) > 0:
+                confidence_level = float(confidence_levels[0])
+            elif isinstance(confidence_levels, (float, int)):
+                confidence_level = float(confidence_levels)
+            else:
+                confidence_level = 0.99
+        else:
+            confidence_level = 0.99
+
+    # Allow passing pre-fitted EVTFitResult or (fit_res, excesses) tuple
+    if isinstance(returns_series, EVTFitResult):
+        fit_res = returns_series
+    elif isinstance(returns_series, tuple) and len(returns_series) >= 1 and isinstance(returns_series[0], EVTFitResult):
+        fit_res = returns_series[0]
+    else:
+        fit_res, _ = fit_gpd_pot(
+            returns_series=returns_series,
+            threshold_percentile=threshold_percentile,
+            threshold_u=threshold_u,
+        )
 
     u = fit_res.threshold_u
     xi = fit_res.shape_xi
@@ -249,7 +282,7 @@ def compute_evt_risk_metrics(
     n_total = fit_res.total_observations_n
     n_u = fit_res.exceedances_count_nu
 
-    alpha_tail = 1.0 - confidence_level
+    alpha_tail = 1.0 - float(confidence_level)
 
     # EVT Value-at-Risk formula
     if abs(xi) > 1e-6:
@@ -273,14 +306,14 @@ def compute_evt_risk_metrics(
     es_evt = max(var_evt, float(es_evt))
 
     metrics = EVTRiskMetrics(
-        confidence=confidence_level,
+        confidence=float(confidence_level),
         evt_var=var_evt,
         evt_es=es_evt,
         evt_var_usd=var_evt * aum,
         evt_es_usd=es_evt * aum,
     )
 
-    return metrics, fit_res
+    return EVTMetricsTuple((metrics, fit_res))
 
 
 def run_comprehensive_evt_suite(
