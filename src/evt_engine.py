@@ -25,6 +25,7 @@ Key Mathematical & Institutional Foundations:
 """
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import logging
 
@@ -309,6 +310,31 @@ def run_comprehensive_evt_suite(
         records.append(m.to_dict())
 
     return metrics_dict, fit_res, pd.DataFrame(records)
+
+
+def export_mean_excess_diagnostic_data(
+    returns_series: pd.Series,
+    output_path: Optional[Path] = None,
+    min_percentile: float = 0.80,
+    max_percentile: float = 0.99,
+    n_thresholds: int = 40,
+) -> pd.DataFrame:
+    """
+    Export sample Mean Excess Function (MEF) data to mathematically justify threshold u.
+    """
+    clean_losses = -returns_series.dropna().values
+    mef_df = compute_mean_excess_function(
+        clean_losses,
+        min_percentile=min_percentile,
+        max_percentile=max_percentile,
+        n_thresholds=n_thresholds,
+    )
+    if output_path is not None:
+        p = Path(output_path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        mef_df.to_csv(p, index=False)
+        logger.info(f"Saved Mean Excess diagnostic table to {p}")
+    return mef_df
 
 
 if __name__ == "__main__":

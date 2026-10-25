@@ -23,6 +23,8 @@ from src.config import (
     REPORTS_DIR,
     OUTPUTS_FIGURES_DIR,
     OUTPUTS_TABLES_DIR,
+    TICKERS,
+    ASSET_METADATA,
 )
 from src.data_loader import load_market_dataset
 from src.portfolio_opt import (
@@ -31,7 +33,7 @@ from src.portfolio_opt import (
 )
 from src.var_engine import run_comprehensive_var_suite
 from src.es_engine import run_comprehensive_es_suite, verify_subadditivity_properties
-from src.evt_engine import run_comprehensive_evt_suite
+from src.evt_engine import run_comprehensive_evt_suite, export_mean_excess_diagnostic_data
 from src.backtest import run_all_models_backtest_suite
 from src.stress_test import (
     compute_euler_risk_budgeting,
@@ -78,6 +80,21 @@ def run_full_pipeline(force_reload: bool = False):
     kpi_df.to_csv(DATA_PROCESSED_DIR / "portfolio_kpis_summary.csv", index=False)
 
     serendib_w = SERENDIB_CONSERVATIVE_WEIGHTS
+    weights_records = []
+    for t in TICKERS:
+        w = serendib_w.get(t, 0.0)
+        meta = ASSET_METADATA.get(t, {})
+        weights_records.append({
+            "Ticker": t,
+            "Asset_Name": meta.get("name", t),
+            "Asset_Class": meta.get("asset_class", ""),
+            "Weight": f"{w*100:.1f}%",
+            "Weight_Numeric": w,
+            "Capital_Allocation_USD": w * MANDATE_SIZE_USD,
+            "Institutional_Role": meta.get("role", ""),
+        })
+    pd.DataFrame(weights_records).to_csv(DATA_PROCESSED_DIR / "target_weights.csv", index=False)
+
     serendib_ret = compute_portfolio_return_series(md.simple_returns, serendib_w)
     serendib_kpis = suite["Serendib Conservative (Recommended)"][1].to_dict()
 
@@ -129,6 +146,10 @@ def run_full_pipeline(force_reload: bool = False):
         aum=MANDATE_SIZE_USD,
     )
     evt_summary_df.to_csv(DATA_PROCESSED_DIR / "evt_summary.csv", index=False)
+    export_mean_excess_diagnostic_data(
+        returns_series=serendib_ret,
+        output_path=DATA_PROCESSED_DIR / "evt_mean_excess_diagnostic.csv",
+    )
     print(f"-> GPD Threshold u: {evt_fit.threshold_u * 100:.3f}% ({evt_fit.threshold_percentile * 100:.1f}th percentile)")
     print(f"-> Fitted Shape xi (Tail Index): {evt_fit.shape_xi:.4f} ({evt_fit.tail_type})")
     print(f"-> KS Test Goodness-of-Fit p-value: {evt_fit.ks_p_value:.4f} (Valid GPD: {evt_fit.ks_p_value > 0.05})")
@@ -161,7 +182,18 @@ def run_full_pipeline(force_reload: bool = False):
     crisis_df.to_csv(DATA_PROCESSED_DIR / "crisis_scenarios.csv", index=False)
 
     stagflation = evaluate_hypothetical_stagflation_shock(serendib_w, aum=MANDATE_SIZE_USD)
+    stagflation["asset_breakdown"].to_csv(DATA_PROCESSED_DIR / "hypothetical_stagflation_shock.csv", index=False)
+
     reverse_stress = perform_reverse_stress_test(serendib_w, aum=MANDATE_SIZE_USD)
+    rev_df = pd.DataFrame([{
+        "Max_Drawdown_Limit": reverse_stress["max_drawdown_limit_pct"],
+        "Max_Drawdown_USD": reverse_stress["max_drawdown_limit_usd"],
+        "Crash_Multiplier_Required": f"{reverse_stress['crash_multiplier_required']:.2f}x",
+        "Critical_SPY_Drop": reverse_stress["critical_spy_drop"],
+        "Critical_AGG_Drop": reverse_stress["critical_agg_drop"],
+        "Board_Defense_Narrative": reverse_stress["board_defense_narrative"],
+    }])
+    rev_df.to_csv(DATA_PROCESSED_DIR / "reverse_stress_test.csv", index=False)
 
     print(f"-> Euler Risk Decomposition Verified: {val['Euler_Decomposition_Verified']}")
     print(f"-> Hypothetical Stagflation Impact: {stagflation['portfolio_return'] * 100:.2f}% (${stagflation['dollar_impact_usd']:,.0f})")

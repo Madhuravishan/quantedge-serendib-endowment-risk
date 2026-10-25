@@ -1,0 +1,8 @@
+Ticker,Asset_Name,Asset_Class,Weight,Weight_Numeric,Capital_Allocation_USD,Institutional_Role
+SPY,SPDR S&P 500 ETF Trust,US Large-Cap Core Equity,25.0%,0.25,2500000.0,Core domestic capital compounding and real purchasing power growth.
+EFA,iShares MSCI EAFE ETF,Developed Markets Equities,10.0%,0.1,1000000.0,International developed market geographical and currency diversifier.
+EEM,iShares MSCI Emerging Markets ETF,Emerging Market Equities,5.0%,0.05,500000.0,High-beta emerging economic growth kicker (capped exposure).
+AGG,iShares Core U.S. Aggregate Bond ETF,US Investment Grade Fixed Income,35.0%,0.35,3500000.0,"Defensive anchor, capital preservation, and liquid operational yield."
+GLD,SPDR Gold Shares,Precious Metals / Real Asset,15.0%,0.15,1500000.0,"Safe haven, tail-risk shock absorber, and monetary debasement hedge."
+XLE,Energy Select Sector SPDR Fund,Natural Resources / Energy Equities,10.0%,0.1,1000000.0,Commodity inflation and geopolitical stagflation hedge.
+XLK,Technology Select Sector SPDR Fund,US Technology Sector,0.0%,0.0,0.0,Secular innovation growth factor (tactical/stress testing).
