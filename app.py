@@ -434,21 +434,32 @@ with tab_tear:
 
         fig_wealth.update_layout(
             template="plotly_dark",
-            height=500,
-            margin=dict(l=40, r=20, t=70, b=20),
+            height=520,
+            title=dict(
+                text="Cumulative Endowment Wealth ($ USD)",
+                y=0.98,
+                x=0.5,
+                xanchor="center",
+                font=dict(size=14, color="#f8fafc"),
+            ),
+            margin=dict(t=75, b=40, l=50, r=30),
             legend=dict(
                 orientation="h",
                 yanchor="bottom",
-                y=1.12,
+                y=1.14,
                 xanchor="center",
                 x=0.5,
                 bgcolor="rgba(15,23,42,0.85)",
                 bordercolor="rgba(148,163,184,0.3)",
                 borderwidth=1,
+                font=dict(color="#f8fafc"),
             ),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(15,23,42,0.6)",
         )
+        if len(fig_wealth.layout.annotations) >= 2:
+            fig_wealth.layout.annotations[0].text = ""  # Managed by top centered title to avoid duplicate text
+            fig_wealth.layout.annotations[1].font.color = "#f8fafc"
         st.plotly_chart(fig_wealth, use_container_width=True)
 
     with c_pie:
@@ -524,7 +535,9 @@ with tab_data:
         st.plotly_chart(fig_corr, use_container_width=True)
 
     st.markdown("#### Formal Augmented Dickey-Fuller (ADF) Stationarity Audit")
-    st.dataframe(md.stationarity_report, use_container_width=True)
+    st.markdown(render_high_contrast_table(md.stationarity_report), unsafe_allow_html=True)
+    with st.expander("📊 View Interactive ADF Dataframe with Column Sorting"):
+        st.dataframe(md.stationarity_report, use_container_width=True, hide_index=True)
     st.info(
         "**Mathematical Proof:** Every asset's log price series exhibits an ADF test p-value > 0.20, confirming the existence of a unit root I(1). "
         "In contrast, all return series reject the unit root null hypothesis with p-values < 1e-28, confirming strict covariance stationarity I(0)."
@@ -619,6 +632,22 @@ with tab_opt:
         )
     )
 
+    # Capital Allocation Line (CAL) connecting Rf through Max Sharpe
+    rf_pct = 3.5  # Statutory long-term risk-free rate proxy
+    cal_max_x = max(frontier_df["Volatility"]) * 100.0 * 1.15
+    cal_x = np.linspace(0, cal_max_x, 50)
+    cal_slope = (kpi_max_s.annual_return * 100.0 - rf_pct) / (kpi_max_s.annual_volatility * 100.0)
+    cal_y = rf_pct + cal_slope * cal_x
+    fig_front.add_trace(
+        go.Scatter(
+            x=cal_x,
+            y=cal_y,
+            mode="lines",
+            line=dict(color="#f59e0b", width=2, dash="dash"),
+            name="Capital Allocation Line (CAL)",
+        )
+    )
+
     fig_front.update_layout(
         template="plotly_dark",
         height=520,
@@ -628,6 +657,18 @@ with tab_opt:
         plot_bgcolor="rgba(15,23,42,0.6)",
     )
     st.plotly_chart(fig_front, use_container_width=True)
+
+    # Detailed weights table across archetypes
+    st.markdown("#### Optimal Portfolio Weights Comparison Across Archetypes (%)")
+    weights_comp_df = pd.DataFrame({
+        "Ticker": TICKERS,
+        "Asset Class": [ASSET_METADATA[t]["asset_class"] for t in TICKERS],
+        "Serendib Conservative (Mandate)": [f"{SERENDIB_CONSERVATIVE_WEIGHTS.get(t, 0.0)*100:.1f}%" for t in TICKERS],
+        "Markowitz Max Sharpe": [f"{max_s_w.get(t, 0.0)*100:.1f}%" for t in TICKERS],
+        "Global Min Volatility": [f"{min_v_w.get(t, 0.0)*100:.1f}%" for t in TICKERS],
+        "Classic 60/40 Benchmark": [f"{CLASSIC_60_40_WEIGHTS.get(t, 0.0)*100:.1f}%" for t in TICKERS],
+    })
+    st.markdown(render_high_contrast_table(weights_comp_df), unsafe_allow_html=True)
 
 
 # ===========================================================================

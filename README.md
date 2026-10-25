@@ -37,6 +37,8 @@ pip install -r requirements.txt
 To ingest data, run stationarity tests, calculate all 6 quantitative layers, validate Basel compliance, and generate executive reports in one command:
 ```bash
 python run_pipeline.py
+# Or compile PDF reports and summary tables directly:
+python src/report_generator.py
 ```
 
 ### 3. Launch the Interactive Streamlit Web Application

@@ -8,7 +8,14 @@ Produces:
 5. outputs/tables/ (8 Institutional summary CSV tables)
 """
 
+import sys
 from pathlib import Path
+
+# Ensure project root is in sys.path when executed directly as a script
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from typing import Dict, Any, Optional, List
 import logging
 import shutil
@@ -1467,4 +1474,119 @@ def generate_publication_figures(
 
     logger.info(f"Generated {len(created_figs)} publication figures in: {outputs_figures_dir}")
     return created_figs
+
+
+def main():
+    """Deterministic standalone runner for PDF and report generation."""
+    import pandas as pd
+    from src.data_loader import load_market_dataset
+    from src.portfolio_opt import build_standard_portfolios_suite, compute_portfolio_return_series
+    from src.var_engine import run_comprehensive_var_suite
+    from src.es_engine import run_comprehensive_es_suite
+    from src.evt_engine import run_comprehensive_evt_suite
+    from src.backtest import run_all_models_backtest_suite
+    from src.stress_test import (
+        compute_euler_risk_budgeting,
+        evaluate_historical_stress_scenarios,
+        evaluate_hypothetical_stagflation_shock,
+        perform_reverse_stress_test,
+    )
+    from src.config import (
+        SERENDIB_CONSERVATIVE_WEIGHTS,
+        MANDATE_SIZE_USD,
+        REPORT_DIR,
+        OUTPUTS_FIGURES_DIR,
+        OUTPUTS_TABLES_DIR,
+        DATA_PROCESSED_DIR,
+    )
+
+    print("Executing Institutional Report Generator...")
+    md = load_market_dataset()
+    serendib_w = SERENDIB_CONSERVATIVE_WEIGHTS
+    serendib_ret = compute_portfolio_return_series(md.simple_returns, serendib_w)
+
+    suite = build_standard_portfolios_suite(md.simple_returns, risk_free_series=md.risk_free_daily)
+    serendib_kpis = suite["Serendib Conservative (Recommended)"][1].to_dict()
+    kpi_records = [suite[p][1].to_dict() for p in suite]
+    kpi_df = pd.DataFrame(kpi_records)
+
+    var_results, var_summary_df = run_comprehensive_var_suite(md.simple_returns, serendib_w, aum=MANDATE_SIZE_USD)
+    es_results, es_summary_df = run_comprehensive_es_suite(md.simple_returns, serendib_w, aum=MANDATE_SIZE_USD)
+    evt_metrics, evt_fit, evt_summary_df = run_comprehensive_evt_suite(returns_series=serendib_ret, aum=MANDATE_SIZE_USD)
+    backtest_models, backtest_df = run_all_models_backtest_suite(serendib_ret, confidence_level=0.99, estimation_window=500, out_of_sample_start="2024-01-01")
+    hist_rep = backtest_models["historical"]
+
+    _, budget_df, _ = compute_euler_risk_budgeting(md.simple_returns, serendib_w, confidence_level=0.99, aum=MANDATE_SIZE_USD)
+    _, crisis_df = evaluate_historical_stress_scenarios(md.simple_returns, serendib_w, aum=MANDATE_SIZE_USD)
+    stagflation = evaluate_hypothetical_stagflation_shock(serendib_w, aum=MANDATE_SIZE_USD)
+    reverse_stress = perform_reverse_stress_test(serendib_w, aum=MANDATE_SIZE_USD)
+
+    tear_sheet_pdf = REPORT_DIR / "tear_sheet.pdf"
+    memo_pdf = REPORT_DIR / "investment_memo.pdf"
+    tearsheet_md = REPORT_DIR / "EXECUTIVE_TEARSHEET.md"
+    memo_md = REPORT_DIR / "INVESTMENT_COMMITTEE_MEMORANDUM.md"
+
+    generate_executive_tearsheet(
+        kpis_dict=serendib_kpis,
+        var_df=var_summary_df,
+        es_df=es_summary_df,
+        evt_info=evt_fit,
+        basel_status=hist_rep.basel.zone,
+        stagflation_result=stagflation,
+        output_path=tearsheet_md,
+    )
+    generate_investment_committee_memo(
+        kpi_table_df=kpi_df,
+        stationarity_df=md.stationarity_report,
+        var_summary_df=var_summary_df,
+        es_summary_df=es_summary_df,
+        evt_fit_info=evt_fit,
+        backtest_summary_df=backtest_df,
+        budget_df=budget_df,
+        crisis_df=crisis_df,
+        stagflation_dict=stagflation,
+        reverse_stress_dict=reverse_stress,
+        output_path=memo_md,
+    )
+
+    build_tear_sheet_pdf(
+        output_pdf_path=tear_sheet_pdf,
+        kpis_dict=serendib_kpis,
+        var_summary_df=var_summary_df,
+        es_summary_df=es_summary_df,
+        evt_fit_info=evt_fit,
+        basel_status=hist_rep.basel.zone,
+        stagflation_dict=stagflation,
+    )
+    build_investment_memo_pdf(
+        output_pdf_path=memo_pdf,
+        kpi_table_df=kpi_df,
+        stationarity_df=md.stationarity_report,
+        var_summary_df=var_summary_df,
+        es_summary_df=es_summary_df,
+        evt_fit_info=evt_fit,
+        backtest_summary_df=backtest_df,
+        budget_df=budget_df,
+        crisis_df=crisis_df,
+        stagflation_dict=stagflation,
+        reverse_stress_dict=reverse_stress,
+    )
+
+    export_submission_tables(DATA_PROCESSED_DIR, OUTPUTS_TABLES_DIR)
+    generate_publication_figures(
+        returns_df=md.simple_returns,
+        serendib_ret=serendib_ret,
+        portfolio_suite=suite,
+        var_results=var_results,
+        es_results=es_results,
+        evt_fit_info=evt_fit,
+        crisis_df=crisis_df,
+        outputs_figures_dir=OUTPUTS_FIGURES_DIR,
+    )
+    print("PDF reports and submission assets successfully generated!")
+
+
+if __name__ == "__main__":
+    main()
+
 
