@@ -69,6 +69,8 @@ dmypy.json
 .vscode/
 *.code-workspace
 .idea/
+.antigravity/
+.agents/
 *.swp
 *.swo
 *~
