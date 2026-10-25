@@ -50,6 +50,7 @@ from src.report_generator import (
     export_submission_tables,
     generate_publication_figures,
 )
+from src.export_static_showcase import export_all_showcase_assets
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("PipelineRunner")
@@ -384,6 +385,12 @@ def run_full_pipeline(force_reload: bool = False):
         stagflation_dict=stagflation,
         reverse_stress_dict=reverse_stress,
     )
+
+    # Export standalone interactive HTML charts and mirror PDFs to docs/ for GitHub Pages
+    try:
+        export_all_showcase_assets()
+    except Exception as e:
+        logger.warning(f"Static showcase export notice: {e}")
 
     elapsed = time.time() - start_time
     print("=" * 80)

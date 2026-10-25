@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serendib University Endowment Risk Engine — Executive Showcase | QuantEdge 1.0</title>
+  <meta name="description" content="Institutional Quantitative Risk Engine & Asset Allocation Showcase for the Serendib University Endowment Fund ($10,000,000 Mandate). Team Pandas Predictors.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #090d16;
+      --bg-surface: #0f172a;
+      --bg-surface-elevated: #1e293b;
+      --bg-surface-glass: rgba(15, 23, 42, 0.85);
+      --border-subtle: rgba(148, 163, 184, 0.15);
+      --border-focus: rgba(56, 189, 248, 0.4);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-indigo: #6366f1;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 32px 24px 80px 24px;
+    }
+
+    /* Top Navigation / Branding */
+    header {
+      background: var(--bg-surface-glass);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand-shield {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 24px rgba(245, 158, 11, 0.35);
+      flex-shrink: 0;
+    }
+
+    .brand-shield svg {
+      width: 28px;
+      height: 28px;
+      fill: #ffffff;
+    }
+
+    .brand-titles h1 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      line-height: 1.25;
+    }
+
+    .brand-titles .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .team-tag {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: #334155;
+      color: #ffffff;
+      border-color: var(--text-muted);
+      transform: translateY(-1px);
+    }
+
+    /* Badges Row */
+    .badges-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .badge-green {
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.35);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .badge-cyan {
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.35);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .badge-gold {
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-green { background: #10b981; box-shadow: 0 0 8px #10b981; }
+    .dot-cyan { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+    .dot-gold { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+
+    /* KPI Grid */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-title svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--accent-cyan);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: var(--bg-surface-glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 18px 20px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.4), transparent);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-focus);
+    }
+
+    .kpi-card:hover::before {
+      opacity: 1;
+    }
+
+    .kpi-label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--accent-emerald);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .kpi-sub.neutral { color: var(--text-muted); }
+    .kpi-sub.amber { color: var(--accent-amber); }
+    .kpi-sub.rose { color: var(--accent-rose); }
+
+    /* Governance Callout */
+    .guardrail-callout {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-left: 4px solid var(--accent-amber);
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-bottom: 36px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .guardrail-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .guardrail-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+
+    .guardrail-desc {
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    .tier-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+
+    .tier-box-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .tier-box p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Interactive Showcase Section */
+    .showcase-section {
+      margin-bottom: 40px;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .tab-btn {
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-cyan);
+      color: #041226;
+      font-weight: 700;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .chart-container {
+      background: var(--bg-surface-glass);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px 14px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 14px;
+    }
+
+    .chart-header h4 {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .chart-header a {
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chart-header a:hover {
+      text-decoration: underline;
+    }
+
+    .chart-frame {
+      width: 100%;
+      height: 580px;
+      border: none;
+      border-radius: 10px;
+      background: #0f172a;
+    }
+
+    /* PDF Viewer Section */
+    .pdf-section {
+      background: var(--bg-surface-glass);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+
+    .pdf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .pdf-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: 820px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: #1e293b;
+    }
+
+    /* Portfolio Breakdown Table */
+    .table-container {
+      background: var(--bg-surface-glass);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 40px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: rgba(30, 41, 59, 0.7);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+      letter-spacing: 0.05em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      color: var(--text-main);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(56, 189, 248, 0.04);
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    /* Model Governance / Institutional Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 36px;
+      margin-top: 48px;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+      margin-bottom: 32px;
+    }
+
+    .footer-col h5 {
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .footer-col p {
+      line-height: 1.55;
+      font-size: 0.82rem;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 24px;
+      border-top: 1px solid rgba(148, 163, 184, 0.1);
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px 12px; }
+      .header-top { flex-direction: column; align-items: flex-start; }
+      .chart-frame { height: 420px; }
+      .pdf-frame { height: 500px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Top Header -->
+    <header>
+      <div class="header-top">
+        <div class="brand-group">
+          <div class="brand-shield">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.54-3.08 8.79-7 9.94-3.92-1.15-7-5.4-7-9.94V6.3l7-3.12z"/></svg>
+          </div>
+          <div class="brand-titles">
+            <h1>Serendib University Endowment Risk Engine</h1>
+            <div class="subtitle">
+              <span>Executive Risk & Asset Allocation Showcase</span>
+              <span class="team-tag">Team Pandas Predictors</span>
+              <span>QuantEdge 1.0 Final Challenge</span>
+            </div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="https://quantedge-serendib-endowment-risk.streamlit.app/" target="_blank" class="btn btn-primary" id="btn-live-app">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Launch Live Engine (Streamlit)
+          </a>
+          <a href="https://github.com/Madhuravishan/quantedge-serendib-endowment-risk" target="_blank" class="btn btn-secondary" id="btn-github-repo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub Repository
+          </a>
+        </div>
+      </div>
+
+      <!-- Regulatory Badges -->
+      <div class="badges-row">
+        <div class="badge badge-green">
+          <span class="dot dot-green"></span>
+          Basel Committee: GREEN ZONE (Multiplier: 3.00x | 3 Breaches &le; 4)
+        </div>
+        <div class="badge badge-cyan">
+          <span class="dot dot-cyan"></span>
+          Mandate AUM: $10,000,000 USD
+        </div>
+        <div class="badge badge-gold">
+          <span class="dot dot-gold"></span>
+          Kupiec POF Validation: p = 0.2879 (Unconditional Coverage Passed)
+        </div>
+        <div class="badge">
+          7-Asset Liquid ETF Universe: SPY (25%), AGG (35%), GLD (15%), EFA (10%), XLE (10%), EEM (5%), XLK (0%)
+        </div>
+      </div>
+    </header>
+
+    <!-- Executive KPI Grid -->
+    <div class="section-title">
+      <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14.2h-2.8zm5.6 8h2.8v6.2h-2.8z"/></svg>
+      Executive Mandate Performance & Tail-Risk Scorecard
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Compounded Return (CAGR)</div>
+        <div class="kpi-value" style="color: #38bdf8;">7.91%</div>
+        <div class="kpi-sub">Endowment Hurdle: 7.00% (+91 bps)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Annualized Volatility</div>
+        <div class="kpi-value">11.31%</div>
+        <div class="kpi-sub">Below 60/40 Benchmark (11.71%)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Sharpe Ratio (Rf = 3.5%)</div>
+        <div class="kpi-value">0.578</div>
+        <div class="kpi-sub neutral">Risk-Adjusted Efficiency</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Sortino Ratio</div>
+        <div class="kpi-value" style="color: #34d399;">0.818</div>
+        <div class="kpi-sub">Downside Semi-Vol: 8.00%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Max Historical Drawdown</div>
+        <div class="kpi-value" style="color: #fbbf24;">-31.05%</div>
+        <div class="kpi-sub amber">2008 Lehman Unhedged Lookback</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">1-Day 99% EVT Expected Shortfall</div>
+        <div class="kpi-value" style="color: #f87171;">$308,209</div>
+        <div class="kpi-sub rose">3.08% Tail Severity (GPD &xi; = 0.2938)</div>
+      </div>
+    </div>
+
+    <!-- Governance & Drawdown Guardrail Protocol -->
+    <div class="guardrail-callout">
+      <div class="guardrail-header">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fbbf24"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+        <h3>Endowment Drawdown Governance &amp; 3-Tier Guardrail Protocol</h3>
+      </div>
+      <p class="guardrail-desc">
+        <strong>Fiduciary Mandate Reconciliation:</strong> The Investment Committee strictly differentiates between the <strong>15.00% Board Risk Budget ($1,500,000 maximum allowable dollar drawdown on $10M AUM)</strong> and the <strong>-31.05% empirical peak-to-trough lookback</strong> recorded during the unmanaged 2008 Lehman Brothers liquidity shock. The 15% tolerance operates as an active, mandatory operational circuit breaker enforced by a formal 3-tier supervisory policy:
+      </p>
+      <div class="tiers-grid">
+        <div class="tier-box" style="border-left: 3px solid #10b981;">
+          <div class="tier-box-header" style="color: #34d399;">
+            <span>🟢 TIER 1: NORMAL POLICY</span>
+            <span>Drawdown &lt; 10.0%</span>
+          </div>
+          <p>Standard policy execution: maintain target weights (35% AGG, 25% SPY, 15% GLD, 10% EFA, 10% XLE, 5% EEM). Quarterly rebalancing with &plusmn;3% corridor tolerance bands. Operational spending funded seamlessly.</p>
+        </div>
+        <div class="tier-box" style="border-left: 3px solid #f59e0b;">
+          <div class="tier-box-header" style="color: #fbbf24;">
+            <span>🟡 TIER 2: WARNING / WATCH</span>
+            <span>10.0% &le; Drawdown &le; 15.0%</span>
+          </div>
+          <p>Risk Committee review triggered. Freeze all active risk asset expansion. Suspend equity rebalancing; channel fixed income coupons strictly to capital defense buffers and university distribution continuity.</p>
+        </div>
+        <div class="tier-box" style="border-left: 3px solid #f43f5e;">
+          <div class="tier-box-header" style="color: #f87171;">
+            <span>🔴 TIER 3: ACTION / CIRCUIT BREAKER</span>
+            <span>Drawdown &gt; 15.0%</span>
+          </div>
+          <p>Mandatory de-risking: systematically reallocate equities and commodity proxies into short-term US Treasury Bills (FRED DTB3 / BIL). Convene Emergency Board Meeting within 24 hours to preserve university capital.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Visualizations Showcase -->
+    <div class="showcase-section">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+        Interactive Quantitative Risk Visualizations (Plotly CDN)
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchChart('wealth')">1. Cumulative Wealth &amp; Drawdowns</button>
+        <button class="tab-btn" onclick="switchChart('frontier')">2. Markowitz Efficient Frontier</button>
+        <button class="tab-btn" onclick="switchChart('evt')">3. EVT Peaks-Over-Threshold Diagnostic</button>
+        <button class="tab-btn" onclick="switchChart('stress')">4. Crisis Stress Scenarios &amp; Stagflation</button>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h4 id="chart-title">Cumulative Endowment Wealth ($10M AUM) vs. Classic 60/40 &amp; Underwater Drawdown Profile</h4>
+          <a id="chart-popout" href="assets/charts/cumulative_wealth.html" target="_blank">
+            Open Full Interactive Window
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+          </a>
+        </div>
+        <iframe id="main-chart-iframe" class="chart-frame" src="assets/charts/cumulative_wealth.html" title="Quantitative Risk Chart"></iframe>
+      </div>
+    </div>
+
+    <!-- PDF Tear Sheet Direct Embed -->
+    <div class="pdf-section">
+      <div class="pdf-header">
+        <div>
+          <div class="section-title" style="margin-bottom: 4px;">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Official Executive Tear Sheet (1-Page Audit Deliverable)
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.86rem;">
+            Institutional one-page executive summary formatted to CFA Institute &amp; SAIFA standards. Direct PDF render:
+          </p>
+        </div>
+        <div class="pdf-actions">
+          <a href="report/tear_sheet.pdf" target="_blank" class="btn btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Download Tear Sheet (PDF)
+          </a>
+          <a href="report/investment_memo.pdf" target="_blank" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            Full Investment Memo (11 Pages)
+          </a>
+        </div>
+      </div>
+      <iframe class="pdf-frame" src="report/tear_sheet.pdf#toolbar=1" title="Executive Tear Sheet PDF"></iframe>
+    </div>
+
+    <!-- Asset Universe Allocation & Stationarity Audit Table -->
+    <div class="table-container">
+      <div class="section-title">
+        <svg viewBox="0 0 24 24"><path d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z"/></svg>
+        Asset Universe Architecture &amp; Stationarity Econometric Proof
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Asset Ticker</th>
+            <th>Asset Class &amp; Institutional Role</th>
+            <th>Target Weight</th>
+            <th>Capital Allocation ($10M)</th>
+            <th>Log Price ADF Stat [p-value]</th>
+            <th>Return ADF Stat [p-value]</th>
+            <th>Integration Order</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono" style="color: #38bdf8;">AGG</td>
+            <td>US Aggregate Investment-Grade Fixed Income</td>
+            <td class="mono">35.0%</td>
+            <td class="mono">$3,500,000</td>
+            <td class="mono">-1.542 [0.512]</td>
+            <td class="mono" style="color: #34d399;">-70.12 [&lt; 1e-28]</td>
+            <td><span class="badge badge-green">I(0) Stationarity Certified</span></td>
+          </tr>
+          <tr>
+            <td class="mono" style="color: #38bdf8;">SPY</td>
+            <td>US Core Large-Cap Equities (S&amp;P 500)</td>
+            <td class="mono">25.0%</td>
+            <td class="mono">$2,500,000</td>
+            <td class="mono">-0.114 [0.948]</td>
+            <td class="mono" style="color: #34d399;">-74.88 [&lt; 1e-28]</td>
+            <td><span class="badge badge-green">I(0) Stationarity Certified</span></td>
+          </tr>
+          <tr>
+            <td class="mono" style="color: #fbbf24;">GLD</td>
+            <td>Physical Gold Trust (Real Asset Store of Value)</td>
+            <td class="mono">15.0%</td>
+            <td class="mono">$1,500,000</td>
+            <td class="mono">-0.486 [0.895]</td>
+            <td class="mono" style="color: #34d399;">-72.31 [&lt; 1e-28]</td>
+            <td><span class="badge badge-green">I(0) Stationarity Certified</span></td>
+          </tr>
+          <tr>
+            <td class="mono" style="color: #38bdf8;">EFA</td>
+            <td>International Developed Markets (MSCI EAFE)</td>
+            <td class="mono">10.0%</td>
+            <td class="mono">$1,000,000</td>
+            <td class="mono">-1.890 [0.337]</td>
+            <td class="mono" style="color: #34d399;">-72.04 [&lt; 1e-28]</td>
+            <td><span class="badge badge-green">I(0) Stationarity Certified</span></td>
+          </tr>
+          <tr>
+            <td class="mono" style="color: #fbbf24;">XLE</td>
+            <td>Energy Sector SPDR (Inflation &amp; Geopolitical Hedge)</td>
+            <td class="mono">10.0%</td>
+            <td class="mono">$1,000,000</td>
+            <td class="mono">-1.688 [0.437]</td>
+            <td class="mono" style="color: #34d399;">-73.49 [&lt; 1e-28]</td>
+            <td><span class="badge badge-green">I(0) Stationarity Certified</span></td>
+          </tr>
+          <tr>
+            <td class="mono" style="color: #38bdf8;">EEM</td>
+            <td>Emerging Markets Equities (High-Beta Growth Kicker)</td>
+            <td class="mono">5.0%</td>
+            <td class="mono">$500,000</td>
+            <td class="mono">-2.115 [0.238]</td>
+            <td class="mono" style="color: #34d399;">-71.18 [&lt; 1e-28]</td>
+            <td><span class="badge badge-green">I(0) Stationarity Certified</span></td>
+          </tr>
+          <tr>
+            <td class="mono" style="color: #94a3b8;">XLK</td>
+            <td>Technology Sector SPDR (Indirectly captured via SPY)</td>
+            <td class="mono">0.0%</td>
+            <td class="mono">$0</td>
+            <td class="mono">0.825 [0.992]</td>
+            <td class="mono" style="color: #34d399;">-75.10 [&lt; 1e-28]</td>
+            <td><span class="badge">Excluded (Avoid Overconcentration)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Institutional Footer -->
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h5>QuantEdge 1.0 Final Challenge</h5>
+          <p>
+            Submission for the Serendib University Endowment Fund ($10M Mandate). Organised by the Society of Actuarial and Financial Analytics (SAIFA), Department of Statistics, University of Colombo, in collaboration with CFA Society Sri Lanka.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h5>Mathematical Methodology</h5>
+          <p>
+            Long-only constrained quadratic optimization, 3-method Value-at-Risk, Artzner (1999) subadditive Expected Shortfall, Pickands-Balkema-de Haan (1975) EVT-POT GPD tail modeling, Euler risk budgeting, and Basel III Traffic Light supervisory validation.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h5>Team Pandas Predictors</h5>
+          <p>
+            Quantitative Asset Management &amp; Risk Engineering Division.<br>
+            All code, tests, and documentation are strictly open-source, version-controlled, and audited under institutional fiduciary governance.
+          </p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 Team "Pandas Predictors" | QuantEdge 1.0 National Challenge | Serendib University Endowment Mandate
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    const charts = {
+      wealth: {
+        src: 'assets/charts/cumulative_wealth.html',
+        title: 'Cumulative Endowment Wealth ($10M AUM) vs. Classic 60/40 & Underwater Drawdown Profile'
+      },
+      frontier: {
+        src: 'assets/charts/efficient_frontier.html',
+        title: 'Markowitz Modern Portfolio Theory & The Efficient Frontier (2,000 Monte Carlo Sim Cloud)'
+      },
+      evt: {
+        src: 'assets/charts/evt_mean_excess.html',
+        title: 'EVT-POT Diagnostic: Sample Mean Excess Function / Mean Residual Life Plot (Threshold u* = 1.011%)'
+      },
+      stress: {
+        src: 'assets/charts/stress_scenarios.html',
+        title: 'Comprehensive 4-Scenario Crisis Stress Matrix: Dollar Impact on USD 10,000,000 Corpus'
+      }
+    };
+
+    function switchChart(chartKey) {
+      const selected = charts[chartKey];
+      if (!selected) return;
+
+      const iframe = document.getElementById('main-chart-iframe');
+      const title = document.getElementById('chart-title');
+      const popout = document.getElementById('chart-popout');
+
+      iframe.src = selected.src;
+      title.innerText = selected.title;
+      popout.href = selected.src;
+
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      if (chartKey === 'wealth') buttons[0].classList.add('active');
+      else if (chartKey === 'frontier') buttons[1].classList.add('active');
+      else if (chartKey === 'evt') buttons[2].classList.add('active');
+      else if (chartKey === 'stress') buttons[3].classList.add('active');
+    }
+  </script>
+</body>
+</html>
