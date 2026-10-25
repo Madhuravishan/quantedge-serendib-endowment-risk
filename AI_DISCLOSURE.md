@@ -12,30 +12,52 @@
 
 | Item | Required Disclosure | Team "Pandas Predictors" Execution & Implementation |
 | :--- | :--- | :--- |
-| **AI Tool(s) Used** | E.g., Claude, ChatGPT, GitHub Copilot | **Google Antigravity / Gemini 3.8 Flash** |
-| **Purpose of AI Use** | E.g., debugging, Streamlit layout, code scaffolding, documentation support | **Scaffolding vectorized pipelines, drafting Streamlit CSS layouts, generating Pytest test harnesses, and automating markdown report formatting.** |
-| **Human Validation Process** | How the team tested, checked, and revised generated output | **Every mathematical equation (Markowitz SLSQP QP, Cornish-Fisher expansion, GPD MLE, Kupiec LR, Christoffersen Markov transitions, Euler risk decomposition) was independently derived from academic literature, cross-checked against closed-form benchmarks, and verified via 22 automated unit tests.** |
-| **Material AI-Generated Components** | Specific components assisted by AI | *"Initial Streamlit dashboard UI structure and Pytest test fixtures were AI-assisted; all quantitative risk engines, parameter fits, EVT threshold justifications, stress testing scenarios, and fiduciary recommendations were independently designed, evaluated, and validated by the team."* |
+| **AI Tool(s) Used** | E.g., Claude, ChatGPT, GitHub Copilot | **Google Antigravity IDE (Gemini 3.8 Flash), Claude (Anthropic), and ChatGPT / GPT-4o (OpenAI)** |
+| **Purpose of AI Use** | E.g., debugging, Streamlit layout, code scaffolding, documentation support | **Scaffolding vectorized data pipelines, drafting Streamlit CSS layouts, generating Pytest test harnesses, boilerplate mathematical syntax wrappers, and automating Markdown report formatting.** |
+| **Human Validation Process** | How the team tested, checked, and revised generated output | **Every mathematical equation (Markowitz SLSQP Quadratic Programming, Cornish-Fisher expansion, Generalized Pareto Distribution Maximum Likelihood Estimation, Kupiec POF Likelihood Ratio, Christoffersen Markov transitions, Euler risk decomposition) was independently derived from academic literature, cross-checked against closed-form benchmarks, and verified via 26 automated unit tests.** |
+| **Material AI-Generated Components** | Specific components assisted by AI | *"AI assistance was utilized strictly for code scaffolding, boilerplate math libraries, Streamlit dashboard UI layout, and initial Pytest unit test fixtures; all investment hypotheses, Serendib endowment weighting rationales, macroeconomic scenario designs (1970s stagflation shock), EVT threshold selections (u* = 95th percentile), and final board/committee recommendations were independently designed, evaluated, and validated by the human team."* |
 
 ---
 
-## 2. Detailed Technical Breakdown of AI Assistance
+## 2. Separation of Concerns: AI vs. Human Responsibilities
+
+To maintain the highest standard of academic rigor and institutional fiduciary accountability, Team "Pandas Predictors" implemented a strict **Separation of Concerns**:
+
+```
+┌─────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────┐
+│                 AI Coding Assistant Scope                   │                    Human Research Team                      │
+│                (Antigravity, Claude, GPT)                   │                  (Team Pandas Predictors)                   │
+├─────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────┤
+│ • Scaffolding vectorized data ingestion functions           │ • Formulating the Serendib endowment asset allocation thesis│
+│ • Boilerplate syntax wrappers for SciPy / NumPy / Statsmodels│ • Determining 7-asset ETF universe constraints (XLK 0%, EEM 5%)│
+│ • Streamlit multi-tab layout and CSS styling tokens         │ • Macroeconomic stress scenario design (1970s stagflation) │
+│ • ReportLab PDF document geometry and canvas boilerplates   │ • EVT Peaks-Over-Threshold selection (u* = 95th percentile) │
+│ • Generating initial Pytest unit test skeleton structures   │ • Econometric validation & Kupiec/Christoffersen derivations│
+│ • Markdown report layout templating and table formatting    │ • Investment Committee formal recommendation & limits       │
+└─────────────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────┘
+```
 
 ### A. Code Scaffolding & Vectorization
-- **AI Contribution:** Provided boilerplate for FastAPI/Streamlit components, Plotly dark-theme styling, and initial function type annotations.
-- **Human Revision:** Rewrote computational bottlenecks to use pure NumPy/SciPy vectorized linear algebra (e.g., Cholesky matrix factorizations for 10,000 Monte Carlo paths) rather than slow iterative loops.
+- **AI Contribution:** Provided boilerplate syntax for FastAPI/Streamlit components, Plotly dark-theme styling, ReportLab flowable wrappers, and initial Python type annotations.
+- **Human Revision:** Optimized computational bottlenecks using pure NumPy/SciPy vectorized linear algebra (e.g., Cholesky matrix factorizations for 10,000 Monte Carlo paths) rather than slow iterative loops.
 
 ### B. Automated Testing Harness (`pytest`)
-- **AI Contribution:** Suggested unit test scaffolding and parameter ranges.
-- **Human Revision:** Verified test assertions against known theoretical properties:
-  - Augmented Dickey-Fuller (ADF) stationarity on synthetic Gaussian white noise.
+- **AI Contribution:** Suggested unit test scaffolding and parameter boundary structures.
+- **Human Revision:** Verified all 26 test assertions against known theoretical and mathematical properties:
+  - Augmented Dickey-Fuller (ADF) stationarity on synthetic Gaussian white noise and random walks.
   - Expected Shortfall subadditivity axiom: $\text{ES}_\alpha(X + Y) \le \text{ES}_\alpha(X) + \text{ES}_\alpha(Y)$.
-  - Monotonicity of Value-at-Risk across confidence levels: $\text{VaR}_{99\%} > \text{VaR}_{95\%} > \text{VaR}_{90\%}$.
+  - Monotonicity of Value-at-Risk and Expected Shortfall: $\text{ES}_{99\%} \ge \text{VaR}_{99\%} \ge \text{VaR}_{95\%} \ge \text{VaR}_{90\%}$.
+  - Portfolio weight constraints: $\sum w_i = 1.0$ and $w_i \ge 0.0$ (no short selling).
+  - Out-of-sample date slicing calendar alignment with zero lookahead bias.
   - Euler risk budgeting identity: $\sum_{i=1}^N w_i \cdot \text{MVaR}_i = \text{VaR}_p$.
 
 ### C. Frontend Interface Design (`app.py`)
-- **AI Contribution:** Structured Streamlit multi-tab layout and CSS theme tokens.
+- **AI Contribution:** Structured Streamlit multi-tab layout, responsive columns, and CSS theme tokens.
 - **Human Revision:** Tailored layout for institutional readability, ensuring side-by-side presentation of VaR, ES, and EVT to clearly highlight the "Gaussian Blindspot" for non-technical committee members.
+
+### D. Qualitative Macroeconomic & Endowment Rationale
+- **AI Contribution:** None.
+- **Human Contribution:** Formulated the university endowment's 7.00% nominal return hurdle (4.5% spending payout + 2.5% inflation), the 15.0% maximum drawdown circuit-breaker, the exclusion of direct tech exposure (preventing tech overconcentration with SPY), and the inclusion of real assets (GLD 15%, XLE 10%) as essential hedges against 1970s-style geopolitical stagflation.
 
 ---
 

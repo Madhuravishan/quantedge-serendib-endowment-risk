@@ -1,0 +1,4 @@
+Confidence Level,Threshold u (%),Threshold Percentile,Exceedances Count (Nu),Fitted Shape xi (Tail Index),Fitted Scale sigma (%),Tail Distribution Regime,KS Goodness-of-Fit p-value,EVT-POT VaR (%),EVT-POT VaR ($10M AUM),EVT-POT Expected Shortfall (%),EVT-POT Expected Shortfall ($10M AUM)
+90%,1.011%,95.0th,262,0.2938,0.4778%,"Heavy-Tailed (Fréchet, xi > 0)",0.8694,0.71%,"$71,236",1.26%,"$126,459"
+95%,1.011%,95.0th,262,0.2938,0.4778%,"Heavy-Tailed (Fréchet, xi > 0)",0.8694,1.01%,"$101,218",1.69%,"$168,913"
+99%,1.011%,95.0th,262,0.2938,0.4778%,"Heavy-Tailed (Fréchet, xi > 0)",0.8694,2.00%,"$199,593",3.08%,"$308,209"

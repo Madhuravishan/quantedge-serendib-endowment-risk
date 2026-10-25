@@ -44,12 +44,30 @@ def test_compute_returns_properties():
 
 
 def test_run_adf_stationarity_test():
-    # Test on stationary white noise
+    # 1. Test on stationary white noise (should reject null -> Stationary I(0))
     np.random.seed(42)
     stationary_series = pd.Series(np.random.normal(0, 1, 500))
-    res = run_adf_stationarity_test(stationary_series)
+    res_stat = run_adf_stationarity_test(stationary_series)
 
-    assert res["is_stationary"] is True
-    assert res["p_value"] < 0.05
-    assert res["conclusion"] == "Stationary I(0)"
-    assert res["adf_statistic"] < res["crit_5pct"]
+    assert res_stat["is_stationary"] is True
+    assert 0.0 <= res_stat["p_value"] <= 1.0
+    assert res_stat["p_value"] < 0.05
+    assert res_stat["conclusion"] == "Stationary I(0)"
+    assert res_stat["adf_statistic"] < res_stat["crit_5pct"]
+    assert "crit_1pct" in res_stat
+    assert "crit_5pct" in res_stat
+    assert "crit_10pct" in res_stat
+    # Critical values must be monotonically increasing (more negative at 1%)
+    assert res_stat["crit_1pct"] < res_stat["crit_5pct"] < res_stat["crit_10pct"] < 0.0
+
+    # 2. Test on non-stationary random walk / cumulative sum (should fail to reject null -> Non-Stationary I(1))
+    np.random.seed(42)
+    non_stationary_series = pd.Series(np.cumsum(np.random.normal(0.001, 0.02, 500)) + 100.0)
+    res_non_stat = run_adf_stationarity_test(non_stationary_series)
+
+    assert 0.0 <= res_non_stat["p_value"] <= 1.0
+    assert res_non_stat["is_stationary"] is False
+    assert res_non_stat["p_value"] > 0.05
+    assert res_non_stat["conclusion"] == "Non-Stationary I(1)"
+    assert res_non_stat["adf_statistic"] > res_non_stat["crit_5pct"]
+

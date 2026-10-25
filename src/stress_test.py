@@ -339,6 +339,73 @@ def evaluate_hypothetical_stagflation_shock(
     }
 
 
+def evaluate_all_stress_scenarios(
+    returns_df: pd.DataFrame,
+    weights: Dict[str, float],
+    aum: float = MANDATE_SIZE_USD,
+) -> Tuple[List[Dict[str, any]], pd.DataFrame]:
+    """
+    Unified 4-Scenario Institutional Crisis Stress Matrix.
+    Explicitly models and outputs exact dollar losses on the mandate ($10M AUM) for:
+    1) 2008 Global Financial Crisis (Lehman Crash)
+    2) March 2020 COVID-19 Shock
+    3) 2022 Inflation & Aggressive Rate Hike Shock
+    4) Custom Team Scenario: 1970s Geopolitical Stagflation Shock
+
+    Returns
+    -------
+    Tuple[List[Dict[str, any]], pd.DataFrame]
+        List of scenario dictionaries and a consolidated comparison DataFrame.
+    """
+    # 1. Historical Crisis Replay (First 3 scenarios)
+    hist_results, hist_df = evaluate_historical_stress_scenarios(returns_df, weights, aum=aum)
+
+    defense_map = {
+        "2008 Global Financial Crisis (Lehman Crash)": "Gold (+18%) & Treasuries offset 45% equity collapse",
+        "March 2020 COVID-19 Liquidity Shock": "Treasuries & Gold provided liquidity in cross-asset selloff",
+        "2022 Inflation & Aggressive Rate Hike Shock": "XLE (+64%) commodity shock absorption protected against equity-bond crash",
+    }
+
+    records = []
+    for res in hist_results:
+        records.append({
+            "Crisis Scenario": res.scenario_name,
+            "Scenario Type": "Historical Replay",
+            "Window / Horizon": f"{res.start_date} to {res.end_date}",
+            "Portfolio Return": f"{res.portfolio_return * 100:.2f}%",
+            "Endowment Dollar Loss ($10M)": f"${res.dollar_impact_usd:,.0f}",
+            "Max Crisis Drawdown": f"{res.max_drawdown * 100:.2f}%",
+            "Classic 60/40 Return": f"{res.comparison_60_40_return * 100:.2f}%",
+            "Classic 60/40 Dollar Loss": f"${res.comparison_60_40_return * aum:,.0f}",
+            "Capital Preserved vs 60/40": f"${res.alpha_preservation_usd:+,.0f}",
+            "Key Institutional Defense": defense_map.get(res.scenario_name, "Asset diversification"),
+            "raw_portfolio_return": res.portfolio_return,
+            "raw_dollar_impact": res.dollar_impact_usd,
+            "raw_capital_preserved": res.alpha_preservation_usd,
+        })
+
+    # 2. Custom Team Scenario: 1970s Stagflation Shock
+    stag = evaluate_hypothetical_stagflation_shock(weights, aum=aum)
+    records.append({
+        "Crisis Scenario": "1970s Geopolitical Stagflation Shock",
+        "Scenario Type": "Custom Macro Shock",
+        "Window / Horizon": "Multi-Quarter Geopolitical Stagflation",
+        "Portfolio Return": f"{stag['portfolio_return'] * 100:.2f}%",
+        "Endowment Dollar Loss ($10M)": f"${stag['dollar_impact_usd']:,.0f}",
+        "Max Crisis Drawdown": f"{stag['portfolio_return'] * 100:.2f}%",
+        "Classic 60/40 Return": f"{stag['benchmark_60_40_return'] * 100:.2f}%",
+        "Classic 60/40 Dollar Loss": f"${stag['benchmark_60_40_dollar']:,.0f}",
+        "Capital Preserved vs 60/40": f"${stag['capital_saved_usd']:+,.0f}",
+        "Key Institutional Defense": "XLE (+25%) and Gold (+15%) non-linear real asset hedge",
+        "raw_portfolio_return": stag["portfolio_return"],
+        "raw_dollar_impact": stag["dollar_impact_usd"],
+        "raw_capital_preserved": stag["capital_saved_usd"],
+    })
+
+    summary_df = pd.DataFrame(records)
+    return records, summary_df
+
+
 def perform_reverse_stress_test(
     weights: Dict[str, float],
     loss_threshold_pct: float = MAX_TOLERABLE_DRAWDOWN,  # 15.0% ($1.5M)

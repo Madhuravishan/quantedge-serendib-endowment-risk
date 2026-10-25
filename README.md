@@ -23,7 +23,14 @@ The **Serendib University Endowment Fund** is an intergenerational pool of capit
 
 ## 🚀 Quickstart & One-Command Execution
 
-### 1. Prerequisites & Environment Setup
+### 1. System Requirements & Compatibility
+- **Operating System:** Cross-platform (Windows 10/11, macOS Monterey 12+, Linux Ubuntu 20.04+ / Debian / RHEL).
+- **Python Environment:** Python 3.10 to 3.14 (Fully verified and benchmarked on Python 3.14.0 64-bit).
+- **Memory (RAM):** 4 GB minimum (8 GB recommended for 10,000-path Cholesky Monte Carlo simulation).
+- **Disk Storage:** ~500 MB (includes virtual environment, ingested price caches, and high-DPI figures).
+- **Hardware Architecture:** Compatible with x86_64 and ARM64 (native Apple Silicon M1/M2/M3/M4 supported).
+
+### 2. Prerequisites & Environment Setup
 Clone the repository and install dependencies (Python 3.10–3.14):
 ```bash
 git clone https://github.com/Madhuravishan/quantedge-serendib-endowment-risk.git
@@ -40,7 +47,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Run the Full End-to-End Quantitative Pipeline
+### 3. Run the Full End-to-End Quantitative Pipeline
 To ingest data, run stationarity tests, calculate all 6 quantitative layers, validate Basel compliance, and generate executive reports in one command:
 ```bash
 python run_pipeline.py
@@ -48,13 +55,13 @@ python run_pipeline.py
 python src/report_generator.py
 ```
 
-### 3. Launch the Interactive Streamlit Web Application
+### 4. Launch the Interactive Streamlit Web Application
 ```bash
 streamlit run app.py
 ```
 The application will launch automatically in your default browser at `http://localhost:8501`.
 
-### 4. Run the Full Unit Test Suite
+### 5. Run the Full Unit Test Suite
 ```bash
 pytest tests/ -v
 ```
@@ -95,8 +102,21 @@ quantedge-serendib-endowment-risk/
 │   ├── tear_sheet.pdf       # Deliverable 4: Official executive tear sheet PDF (<5 min review)
 │   └── investment_memo.pdf  # Deliverable 3: Official 9-page investment memorandum PDF
 ├── outputs/                 # Exported publication artifacts
-│   ├── figures/             # 6 High-resolution publication charts (PNG 300 DPI)
-│   └── tables/              # 10 Institutional summary CSV tables
+│   ├── figures/             # Publication-grade charts (300 DPI)
+│   │   ├── efficient_frontier.png
+│   │   ├── cumulative_drawdown.png
+│   │   ├── cumulative_wealth_drawdown.png
+│   │   ├── evt_mean_excess_plot.png
+│   │   ├── var_breach_timeline.png
+│   │   └── stress_scenario_losses.png
+│   └── tables/              # Structured institutional CSV tables
+│       ├── adf_stationarity.csv
+│       ├── adf_stationarity_results.csv
+│       ├── portfolio_weights_kpis.csv
+│       ├── var_es_comparison.csv
+│       ├── evt_tail_metrics.csv
+│       ├── backtest_summary.csv
+│       └── stress_test_losses.csv
 └── docs/
     └── Quant edge 1.0 Final Challenge 1.pdf # Official competition briefing & rubric
 ```
@@ -164,7 +184,7 @@ In accordance with Section 8.7 of the QuantEdge Competition Brief:
 ## 📜 Official Deliverables Checklist (Section 7 Compliance)
 - [x] **Deliverable 1: Public/Judge-Accessible GitHub Repository:** Clean, modular structure with documentation and reproducible setup.
 - [x] **Deliverable 2: Interactive Streamlit Application:** Runnable locally with one command: `streamlit run app.py`.
-- [x] **Deliverable 3: 7–15 Page Investment Committee Memorandum:** [`report/investment_memo.pdf`](report/investment_memo.pdf) (Comprehensive 9-page institutional memorandum covering data cleaning, quantitative methodology, backtesting, stress testing, and assumptions & limitations).
+- [x] **Deliverable 3: 7–15 Page Investment Committee Memorandum:** [`report/investment_memo.pdf`](report/investment_memo.pdf) (Comprehensive 11-page institutional memorandum covering data cleaning, quantitative methodology, backtesting, stress testing, and assumptions & limitations).
 - [x] **Deliverable 4: 1-Page Executive Tear Sheet:** [`report/tear_sheet.pdf`](report/tear_sheet.pdf) (High-level institutional executive tear sheet for <5 min Board review).
 - [x] **Deliverable 5: Live Pitch Deck & Committee Defence:** Ready for live pitch with presentation deck before the judging panel (for top 5 finalist teams).
-- [x] **Robust Test Suite:** 22 passing unit tests covering all statistical and quantitative layers (`pytest tests/ -v`).
+- [x] **Robust Test Suite:** 26 passing unit tests (100% pass rate, zero warnings) covering all statistical and quantitative layers (`pytest tests/ -v`).

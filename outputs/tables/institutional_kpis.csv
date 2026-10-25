@@ -1,0 +1,6 @@
+Portfolio,CAGR,Annual Return,Annual Volatility,Sharpe Ratio (Rf),Downside Volatility,Sortino Ratio,CAPM Beta (vs SPY),Jensen's Alpha (ann),Treynor Ratio,Tracking Error,Information Ratio,Max Drawdown (MDD),Calmar Ratio,Gain-to-Pain Ratio,Skewness,Excess Kurtosis,End Wealth ($10M AUM)
+Serendib Conservative (Recommended),7.91%,8.25%,11.31%,0.578,8.00%,0.818,0.528,0.93%,12.38%,10.36%,-0.394,-31.05%,0.255,1.151,0.051,17.517,"$48,556,769.19"
+Markowitz Max Sharpe,14.55%,14.82%,15.66%,0.837,10.91%,1.201,0.637,6.33%,20.57%,12.01%,0.206,-34.94%,0.417,1.187,-0.023,8.147,"$167,792,962.30"
+Minimum Variance,3.70%,3.76%,5.08%,0.402,3.74%,0.547,0.070,1.30%,29.14%,18.49%,-0.464,-16.74%,0.221,1.159,-1.867,58.068,"$21,240,321.00"
+Classic 60/40 Benchmark,8.25%,8.61%,11.71%,0.589,8.25%,0.836,0.600,0.52%,11.49%,7.95%,-0.468,-34.70%,0.238,1.156,0.180,18.942,"$51,838,705.31"
+Equal Weight (1/N),9.60%,10.47%,16.11%,0.543,11.38%,0.769,0.776,0.51%,11.28%,7.50%,-0.250,-42.35%,0.227,1.133,0.066,15.512,"$67,031,829.55"

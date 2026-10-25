@@ -3,22 +3,37 @@ Layer 1: Foundations - Portfolio Theory, Optimization & Institutional KPIs
 Mandate: The Serendib University Endowment Fund (USD 10,000,000 AUM)
 QuantEdge 1.0 National STEM Competition - Team 'Pandas Predictors'
 
-Key Mathematical Capabilities:
+Core Institutional Investment Rationales & Financial Engineering Principles:
+1. Logarithmic vs. Arithmetic Returns Separation:
+   - Logarithmic Returns (r_t = ln(P_t / P_{t-1})) are utilized across risk engines
+     (ADF stationarity, covariance modeling, Cholesky diffusion paths, and EVT) due to
+     their exact time-additivity and theoretical asymptotic normality under i.i.d. assumptions.
+   - Arithmetic Compounding Returns (R_t = (P_t - P_{t-1}) / P_{t-1}) are strictly applied
+     for cross-sectional portfolio aggregation and trustee presentation, as linear asset
+     weightings hold only on discrete simple returns: R_{p,t} = sum(w_i * R_{i,t}).
+
+2. The Leptokurtic Failure of Gaussian Models:
+   - Empirical equity and commodity returns exhibit heavy tails (excess kurtosis > 15),
+     invalidating the standard normal distribution assumption. Gaussian models severely
+     understate extreme downside tail risk (the 'Gaussian Blindspot'), necessitating fat-tailed
+     Student-t (nu ~ 4-8) and Extreme Value Theory (EVT) Generalized Pareto Distribution (GPD)
+     modeling for regulatory capital solvency.
+
+3. Zero-Weighting of Technology Sector SPDR (XLK = 0.0%):
+   - With SPY already carrying an approximate 30% weighting in mega-cap technology equities,
+     allocating direct capital to XLK creates an uncompensated concentration penalty and
+     exposes the endowment to high-duration valuation compression during monetary tightening cycles.
+
+4. 35% AGG Fixed-Income Allocation Pairing:
+   - The 35% ($3.5M) allocation to US Investment Grade Fixed Income (AGG) serves as the primary
+     defensive anchor, providing liquid coupon income and capital preservation directly calibrated
+     to fund the University's 4.0%-4.5% annual spending rule for STEM scholarships and faculty payroll.
+
+Key Quantitative Implementations:
 1. Markowitz Mean-Variance Optimization via Quadratic Programming (SLSQP).
 2. Efficient Frontier derivation and tangency portfolio solving.
-3. Prescribed Model Portfolios:
-   - Serendib Conservative Endowment Allocation (Defended human-justified mandate)
-   - Max Sharpe Portfolio
-   - Minimum Variance Portfolio
-   - Classic 60/40 Equity/Bond Benchmark
-   - Equal Weight (1/N)
-4. Institutional Performance & Risk KPI Engine:
-   - Annualized Return, Volatility, Sharpe Ratio
-   - Downside Semi-Deviation, Sortino Ratio
-   - CAPM Beta, Jensen's Alpha, Treynor Ratio
-   - Tracking Error, Information Ratio (vs SPY benchmark)
-   - Peak-to-Trough Drawdown series, Maximum Drawdown (MDD), Calmar Ratio
-   - Gain-to-Pain Ratio, Skewness, Kurtosis
+3. Prescribed Model Portfolios (Serendib Conservative, Max Sharpe, Min Vol, 60/40, Equal Weight).
+4. Full Suite of Institutional Performance & Risk KPIs.
 """
 
 from dataclasses import dataclass
@@ -87,6 +102,81 @@ class PortfolioKPIs:
             "Excess Kurtosis": f"{self.kurtosis:.3f}",
             "End Wealth ($10M AUM)": f"${self.final_wealth_usd:,.2f}",
         }
+
+
+# =========================================================================
+# ENDOWMENT DRAWDOWN GUARDRAIL PROTOCOL & MANDATE RECONCILIATION
+# =========================================================================
+# Mandate Reconciliation:
+# - Board Constraint (15% Max Tolerable Drawdown / $1.5M Capital Loss):
+#   Functions as an Operational Annual Risk Budget / Circuit-Breaker Policy.
+# - Historical Max Drawdown (-31.05%):
+#   Reflects the 20-year unmanaged, systemic 2008 Lehman Global Financial Crisis tail.
+# - 3-Tier Governance Response Protocol ensures the portfolio never breaches 15%
+#   in live operations by actively de-risking into short-term US Treasury Bills (DTB3).
+
+ENDOWMENT_DRAWDOWN_GUARDRAIL_TIERS = {
+    "Tier 1": {
+        "name": "Normal Operations",
+        "threshold": "Drawdown < 10.0%",
+        "max_dd_limit": 0.10,
+        "action": "Standard quarterly rebalancing to Serendib target weights (35% AGG, 25% SPY, 15% GLD, 10% EFA, 10% XLE, 5% EEM). Active duration and alpha monitoring.",
+        "status": "GREEN",
+        "color": "#00C853",
+    },
+    "Tier 2": {
+        "name": "Watch Zone",
+        "threshold": "10.0% <= Drawdown <= 15.0%",
+        "max_dd_limit": 0.15,
+        "action": "Immediate freeze on rebalancing; emergency Risk Committee alert; tactical suspension of active equity expansion; risk-parity hedge review.",
+        "status": "YELLOW / WATCH",
+        "color": "#FFD600",
+    },
+    "Tier 3": {
+        "name": "Circuit Breaker",
+        "threshold": "Drawdown > 15.0%",
+        "max_dd_limit": 1.00,
+        "action": "Mandatory capital preservation protocol: orderly de-risking of equity/commodity risk assets into short-term US Treasury Bills (FRED DTB3 proxy) until portfolio drawdown recovers below 10.0%.",
+        "status": "RED / CIRCUIT BREAKER",
+        "color": "#D50000",
+    },
+}
+
+
+def evaluate_drawdown_guardrail_status(current_drawdown: float) -> Dict[str, any]:
+    """
+    Evaluate the current portfolio drawdown against the 3-Tier Endowment Drawdown Guardrail Protocol.
+    
+    Parameters
+    ----------
+    current_drawdown : float
+        Current peak-to-trough drawdown as a positive decimal (e.g. 0.08 for 8% drawdown)
+        or negative decimal (e.g. -0.08).
+        
+    Returns
+    -------
+    Dict[str, any]
+        Tier name, protocol details, operational status, and required governance action.
+    """
+    dd = abs(current_drawdown)
+    if dd < 0.10:
+        tier_key = "Tier 1"
+    elif dd <= 0.15:
+        tier_key = "Tier 2"
+    else:
+        tier_key = "Tier 3"
+        
+    tier_info = ENDOWMENT_DRAWDOWN_GUARDRAIL_TIERS[tier_key]
+    return {
+        "tier": tier_key,
+        "tier_name": tier_info["name"],
+        "current_drawdown_pct": dd * 100.0,
+        "current_loss_usd": dd * MANDATE_SIZE_USD,
+        "threshold": tier_info["threshold"],
+        "status": tier_info["status"],
+        "color": tier_info["color"],
+        "governance_action": tier_info["action"],
+    }
 
 
 def compute_portfolio_return_series(

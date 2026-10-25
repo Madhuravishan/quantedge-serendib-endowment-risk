@@ -72,3 +72,23 @@ def test_calculate_portfolio_kpis(sample_returns):
     assert kpis.annual_volatility > 0.0
     assert kpis.max_drawdown <= 0.0
     assert 0.0 <= kpis.beta <= 2.0
+
+
+def test_portfolio_weight_constraints(sample_returns):
+    from src.config import SERENDIB_CONSERVATIVE_WEIGHTS, TARGET_WEIGHTS
+    from src.portfolio_opt import build_standard_portfolios_suite
+
+    # 1. Verify Serendib Conservative weights
+    for name, w_dict in [("SERENDIB_CONSERVATIVE_WEIGHTS", SERENDIB_CONSERVATIVE_WEIGHTS), ("TARGET_WEIGHTS", TARGET_WEIGHTS)]:
+        weights = np.array(list(w_dict.values()))
+        assert np.isclose(np.sum(weights), 1.0, atol=1e-5), f"{name} weights must sum to 1.0"
+        assert np.all(weights >= 0.0), f"{name} weights must be non-negative (no shorting)"
+
+    # 2. Verify all suites in standard portfolio suite
+    suite = build_standard_portfolios_suite(sample_returns)
+    for p_name, (w_dict, kpis, ret_series) in suite.items():
+        w_vals = np.array(list(w_dict.values()))
+        assert np.isclose(np.sum(w_vals), 1.0, atol=1e-4), f"Portfolio {p_name} weights must sum to 1.0"
+        assert np.all(w_vals >= -1e-5), f"Portfolio {p_name} weights must satisfy w_i >= 0"
+
+

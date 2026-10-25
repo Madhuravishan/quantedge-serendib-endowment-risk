@@ -9,6 +9,7 @@ import pytest
 from src.stress_test import (
     compute_euler_risk_budgeting,
     evaluate_hypothetical_stagflation_shock,
+    evaluate_all_stress_scenarios,
     perform_reverse_stress_test,
 )
 
@@ -54,3 +55,26 @@ def test_reverse_stress_testing():
     assert rev["crash_multiplier_required"] > 1.0
     assert "critical_spy_drop" in rev
     assert "circuit-breaker is breached" in rev["board_defense_narrative"]
+
+
+def test_evaluate_all_stress_scenarios():
+    from src.data_loader import load_market_dataset
+    md = load_market_dataset()
+    weights = {"SPY": 0.25, "AGG": 0.35, "GLD": 0.15, "EFA": 0.10, "XLE": 0.10, "EEM": 0.05, "XLK": 0.0}
+    recs, df = evaluate_all_stress_scenarios(md.simple_returns, weights, aum=10_000_000)
+
+    # All 4 required scenarios present
+    assert len(recs) == 4
+    assert len(df) == 4
+    scenarios = list(df["Crisis Scenario"])
+    assert "2008 Global Financial Crisis (Lehman Crash)" in scenarios
+    assert "March 2020 COVID-19 Liquidity Shock" in scenarios
+    assert "2022 Inflation & Aggressive Rate Hike Shock" in scenarios
+    assert "1970s Geopolitical Stagflation Shock" in scenarios
+
+    # Check dollar impact formatted
+    for row in recs:
+        assert "Endowment Dollar Loss ($10M)" in row
+        assert "Capital Preserved vs 60/40" in row
+        assert "Key Institutional Defense" in row
+

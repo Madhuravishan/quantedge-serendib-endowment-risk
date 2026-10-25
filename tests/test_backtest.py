@@ -57,3 +57,39 @@ def test_basel_traffic_light_zones():
     r_res = evaluate_basel_traffic_light(exceptions_count=11, window_days=250, confidence_level=0.99)
     assert r_res.zone == "RED"
     assert r_res.capital_multiplier == 4.00
+
+
+def test_out_of_sample_date_slicing_calendar_alignment():
+    """
+    Verify out-of-sample date slicing aligns with trading day calendars:
+    - All evaluation dates must be strictly on or after out_of_sample_start.
+    - Dates must align with trading days (no weekend days).
+    - Lookback calibration window strictly precedes each evaluation point (no lookahead bias).
+    """
+    from src.backtest import run_rolling_out_of_sample_backtest
+
+    np.random.seed(42)
+    # Generate business days spanning in-sample (2022-2023) and out-of-sample (2024-2025)
+    dates = pd.date_range("2022-01-03", "2025-06-30", freq="B")
+    ret_values = np.random.normal(0.0003, 0.01, size=len(dates))
+    ret_series = pd.Series(ret_values, index=dates)
+
+    report, eval_df = run_rolling_out_of_sample_backtest(
+        returns_series=ret_series,
+        model_type="historical",
+        confidence_level=0.99,
+        estimation_window=250,
+        out_of_sample_start="2024-01-01",
+    )
+
+    assert not eval_df.empty, "Evaluation DataFrame must not be empty"
+    # 1. Verify date boundary
+    assert eval_df.index.min() >= pd.to_datetime("2024-01-01"), "All evaluated dates must be >= 2024-01-01"
+    # 2. Verify calendar alignment (strictly business days: Monday=0 to Friday=4)
+    assert (eval_df.index.dayofweek < 5).all(), "All evaluation dates must be valid trading days (no weekends)"
+    # 3. Verify monotonic time ordering
+    assert eval_df.index.is_monotonic_increasing, "Evaluation dates must be strictly monotonic"
+    # 4. Verify observation count matches trading days in slice
+    expected_days = len(ret_series.loc[ret_series.index >= "2024-01-01"])
+    assert len(eval_df) == expected_days, f"Expected {expected_days} trading days, got {len(eval_df)}"
+

@@ -444,8 +444,12 @@ def generate_stationarity_report(
     report_df = pd.DataFrame(records)
     report_df.to_csv(DATA_PROCESSED_DIR / "adf_stationarity_report.csv", index=False)
     report_df.to_csv(DATA_PROCESSED_DIR / "stationarity_report.csv", index=False)
+    report_df.to_csv(DATA_PROCESSED_DIR / "adf_stationarity.csv", index=False)
+    report_df.to_csv(DATA_PROCESSED_DIR / "adf_stationarity_results.csv", index=False)
     report_df.to_csv(OUTPUTS_TABLES_DIR / "adf_stationarity_report.csv", index=False)
     report_df.to_csv(OUTPUTS_TABLES_DIR / "stationarity_report.csv", index=False)
+    report_df.to_csv(OUTPUTS_TABLES_DIR / "adf_stationarity.csv", index=False)
+    report_df.to_csv(OUTPUTS_TABLES_DIR / "adf_stationarity_results.csv", index=False)
     return report_df
 
 
