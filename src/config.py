@@ -14,11 +14,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 DATA_RAW_DIR = DATA_DIR / "raw"
 DATA_PROCESSED_DIR = DATA_DIR / "processed"
-REPORTS_DIR = BASE_DIR / "reports"
+REPORT_DIR = BASE_DIR / "report"
+REPORTS_DIR = REPORT_DIR  # Alias for backward compatibility
+OUTPUTS_DIR = BASE_DIR / "outputs"
+OUTPUTS_FIGURES_DIR = OUTPUTS_DIR / "figures"
+OUTPUTS_TABLES_DIR = OUTPUTS_DIR / "tables"
 
 DATA_RAW_DIR.mkdir(parents=True, exist_ok=True)
 DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
+OUTPUTS_FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+OUTPUTS_TABLES_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
 # Client Mandate Specification
@@ -99,6 +105,9 @@ SERENDIB_CONSERVATIVE_WEIGHTS: Dict[str, float] = {
     "EEM": 0.05,  # 5% Controlled emerging market exposure
     "XLK": 0.00,  # 0% Direct tech (already ~30% embedded inside SPY)
 }
+
+TARGET_WEIGHTS = SERENDIB_CONSERVATIVE_WEIGHTS
+TICKER_NAMES = {t: ASSET_METADATA[t]["name"] for t in ASSET_METADATA}
 
 CLASSIC_60_40_WEIGHTS: Dict[str, float] = {
     "SPY": 0.60,

@@ -19,7 +19,10 @@ from src.config import (
     MANDATE_SIZE_USD,
     SERENDIB_CONSERVATIVE_WEIGHTS,
     DATA_PROCESSED_DIR,
+    REPORT_DIR,
     REPORTS_DIR,
+    OUTPUTS_FIGURES_DIR,
+    OUTPUTS_TABLES_DIR,
 )
 from src.data_loader import load_market_dataset
 from src.portfolio_opt import (
@@ -39,6 +42,10 @@ from src.stress_test import (
 from src.report_generator import (
     generate_executive_tearsheet,
     generate_investment_committee_memo,
+    build_tear_sheet_pdf,
+    build_investment_memo_pdf,
+    export_submission_tables,
+    generate_publication_figures,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -164,9 +171,9 @@ def run_full_pipeline(force_reload: bool = False):
     # ---------------------------------------------------------------------------
     # Generate Formal Institutional Deliverables
     # ---------------------------------------------------------------------------
-    print("\nGenerating Institutional Reports...")
-    tearsheet_path = REPORTS_DIR / "EXECUTIVE_TEARSHEET.md"
-    memo_path = REPORTS_DIR / "INVESTMENT_COMMITTEE_MEMORANDUM.md"
+    print("\nGenerating Institutional Reports & PDF Documents...")
+    tearsheet_path = REPORT_DIR / "EXECUTIVE_TEARSHEET.md"
+    memo_path = REPORT_DIR / "INVESTMENT_COMMITTEE_MEMORANDUM.md"
 
     generate_executive_tearsheet(
         kpis_dict=serendib_kpis,
@@ -192,12 +199,58 @@ def run_full_pipeline(force_reload: bool = False):
         output_path=memo_path,
     )
 
+    # Compile official PDFs in report/
+    tear_sheet_pdf = REPORT_DIR / "tear_sheet.pdf"
+    memo_pdf = REPORT_DIR / "investment_memo.pdf"
+    build_tear_sheet_pdf(
+        output_pdf_path=tear_sheet_pdf,
+        kpis_dict=serendib_kpis,
+        var_summary_df=var_summary_df,
+        es_summary_df=es_summary_df,
+        evt_fit_info=evt_fit,
+        basel_status=hist_rep.basel.zone,
+        stagflation_dict=stagflation,
+    )
+    build_investment_memo_pdf(
+        output_pdf_path=memo_pdf,
+        kpi_table_df=kpi_df,
+        stationarity_df=md.stationarity_report,
+        var_summary_df=var_summary_df,
+        es_summary_df=es_summary_df,
+        evt_fit_info=evt_fit,
+        backtest_summary_df=backtest_df,
+        budget_df=budget_df,
+        crisis_df=crisis_df,
+        stagflation_dict=stagflation,
+        reverse_stress_dict=reverse_stress,
+    )
+
+    # ---------------------------------------------------------------------------
+    # Export Tables & Publication Figures
+    # ---------------------------------------------------------------------------
+    print("\nExporting Institutional Tables to outputs/tables/ and Figures to outputs/figures/...")
+    export_submission_tables(DATA_PROCESSED_DIR, OUTPUTS_TABLES_DIR)
+    generate_publication_figures(
+        returns_df=md.simple_returns,
+        serendib_ret=serendib_ret,
+        portfolio_suite=suite,
+        var_results=var_results,
+        es_results=es_results,
+        evt_fit_info=evt_fit,
+        crisis_df=crisis_df,
+        outputs_figures_dir=OUTPUTS_FIGURES_DIR,
+    )
+
     elapsed = time.time() - start_time
     print("=" * 80)
     print(f"  QUANT ENGINE PIPELINE COMPLETED SUCCESSFULLY IN {elapsed:.1f}s")
-    print(f"  Deliverables Ready:")
-    print(f"  - Executive Tear Sheet: {tearsheet_path}")
-    print(f"  - Investment Committee Memo: {memo_path}")
+    print(f"  Deliverables Ready in report/ and outputs/:")
+    print(f"  - Executive Tear Sheet (PDF): {tear_sheet_pdf}")
+    print(f"  - Investment Committee Memo (PDF): {memo_pdf}")
+    print(f"  - Executive Tear Sheet (Markdown): {tearsheet_path}")
+    print(f"  - Investment Committee Memo (Markdown): {memo_path}")
+    print(f"  - Publication Figures: {OUTPUTS_FIGURES_DIR}")
+    print(f"  - Institutional Tables: {OUTPUTS_TABLES_DIR}")
     print(f"  - Interactive Streamlit Dashboard: 'streamlit run app.py'")
     print("=" * 80)
 
