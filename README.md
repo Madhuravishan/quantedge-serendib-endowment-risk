@@ -81,9 +81,12 @@ saifa_quant_round_02/
 ├── data/
 │   ├── raw/                 # Ingested price and risk-free series
 │   └── processed/           # Processed log/simple returns, ADF reports, VaR/ES matrices
-└── reports/
-    ├── EXECUTIVE_TEARSHEET.md              # 1-page executive tear sheet (<5 min read)
-    └── INVESTMENT_COMMITTEE_MEMORANDUM.md  # 12-page comprehensive institutional memorandum
+├── reports/
+│   ├── EXECUTIVE_TEARSHEET.md              # 1-page executive tear sheet (<5 min read)
+│   └── INVESTMENT_COMMITTEE_MEMORANDUM.md  # 12-page comprehensive institutional memorandum
+└── docs/
+    ├── PRESENTATION_DECK.md                # 10-12 min live pitch deck & committee Q&A defense
+    └── Quant edge 1.0 Final Challenge 1.pdf # Official competition briefing & rubric
 ```
 
 ---
@@ -146,9 +149,10 @@ In accordance with Section 8.7 of the QuantEdge Competition Brief:
 
 ---
 
-## 📜 Deliverables Checklist
-- [x] **Reproducible GitHub Repository:** Clean, modular structure with `run_pipeline.py`.
-- [x] **Interactive Streamlit Web App:** Runnable locally via `streamlit run app.py`.
-- [x] **Executive Tear Sheet:** [reports/EXECUTIVE_TEARSHEET.md](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/reports/EXECUTIVE_TEARSHEET.md) (<5 min read).
-- [x] **Formal Investment Committee Memorandum:** [reports/INVESTMENT_COMMITTEE_MEMORANDUM.md](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/reports/INVESTMENT_COMMITTEE_MEMORANDUM.md) (12-page comprehensive report).
-- [x] **Full Pytest Suite:** 22 passing unit tests covering all mathematical modules.
+## 📜 Official Deliverables Checklist (Section 7 Compliance)
+- [x] **Deliverable 1: Public/Judge-Accessible GitHub Repository:** Clean, modular structure with documentation and reproducible setup.
+- [x] **Deliverable 2: Interactive Streamlit Application:** Runnable locally with one command: `streamlit run app.py`.
+- [x] **Deliverable 3: 7–15 Page Investment Committee Memorandum:** [reports/INVESTMENT_COMMITTEE_MEMORANDUM.md](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/reports/INVESTMENT_COMMITTEE_MEMORANDUM.md) (12-page comprehensive report covering data cleaning, quantitative methodology, backtesting, stress testing, and assumptions & limitations).
+- [x] **Deliverable 4: 1-Page Executive Tear Sheet:** [reports/EXECUTIVE_TEARSHEET.md](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/reports/EXECUTIVE_TEARSHEET.md) (<5 min institutional executive summary).
+- [x] **Deliverable 5: 10–12 Minute Live Pitch Deck & Q&A Defence:** [docs/PRESENTATION_DECK.md](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/docs/PRESENTATION_DECK.md) (Slide-by-slide script, timing, talking points, and committee Q&A defense).
+- [x] **Robust Test Suite:** 22 passing unit tests covering all statistical and quantitative layers (`pytest tests/ -v`).

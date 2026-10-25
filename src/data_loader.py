@@ -287,7 +287,7 @@ def clean_price_data(
     return df_clean, audit
 
 
-def compute_returns(df_prices: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def compute_returns(df_prices: pd.DataFrame, save_cache: bool = False) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Calculate logarithmic and simple returns from cleaned price series.
     
@@ -310,9 +310,10 @@ def compute_returns(df_prices: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame
     # Log Returns: ln(P_t) - ln(P_{t-1})
     log_ret = np.log(df_prices / df_prices.shift(1)).dropna()
 
-    # Persist processed datasets
-    log_ret.to_csv(DATA_PROCESSED_DIR / "returns_log.csv")
-    simple_ret.to_csv(DATA_PROCESSED_DIR / "returns_simple.csv")
+    # Persist processed datasets if requested
+    if save_cache:
+        log_ret.to_csv(DATA_PROCESSED_DIR / "returns_log.csv")
+        simple_ret.to_csv(DATA_PROCESSED_DIR / "returns_simple.csv")
 
     return log_ret, simple_ret
 
@@ -407,7 +408,7 @@ def load_market_dataset(force_reload: bool = False) -> MarketData:
     """
     raw_prices = fetch_raw_etf_prices(force_reload=force_reload)
     clean_prices, quality_audit = clean_price_data(raw_prices)
-    log_ret, simple_ret = compute_returns(clean_prices)
+    log_ret, simple_ret = compute_returns(clean_prices, save_cache=True)
 
     rf_daily, rf_annual = fetch_risk_free_rate(
         start=str(clean_prices.index.min().strftime("%Y-%m-%d")),
