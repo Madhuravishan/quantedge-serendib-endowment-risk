@@ -27,7 +27,14 @@ The **Serendib University Endowment Fund** is an intergenerational pool of capit
 Clone the repository and install dependencies (Python 3.10–3.14):
 ```bash
 git clone https://github.com/Madhuravishan/quantedge-serendib-endowment-risk.git
-cd saifa_quant_round_02
+cd quantedge-serendib-endowment-risk
+
+# Optional: Create and activate an isolated virtual environment
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On macOS / Linux:
+source venv/bin/activate
 
 # Install dependencies (All free-tier, non-proprietary open source)
 pip install -r requirements.txt
@@ -57,11 +64,12 @@ pytest tests/ -v
 ## 📐 Quantitative Architecture & 6-Layer Modular Pipeline
 
 ```
-saifa_quant_round_02/
+quantedge-serendib-endowment-risk/
 ├── run_pipeline.py          # Master deterministic execution runner
 ├── app.py                   # Multi-panel interactive Streamlit application
 ├── requirements.txt         # Open-source free-tier dependency manifest
 ├── README.md                # Comprehensive institutional documentation
+├── AI_DISCLOSURE.md         # Mandatory AI & coding assistant disclosure (Section 8.7)
 ├── src/
 │   ├── config.py            # Mandate parameters, tickers, date ranges, Basel limits
 │   ├── data_loader.py       # Module 1: Ingestion, cleaning, log-returns, ADF stationarity
@@ -83,16 +91,13 @@ saifa_quant_round_02/
 ├── data/
 │   ├── raw/                 # Ingested price and risk-free series
 │   └── processed/           # Processed log/simple returns, ADF reports, VaR/ES matrices
-├── report/                  # Formal submission PDF & Markdown reports
-│   ├── tear_sheet.pdf       # Deliverable 4: Official executive tear sheet PDF
-│   ├── investment_memo.pdf  # Deliverable 3: Official 12-page investment memorandum PDF
-│   ├── tear_sheet.md        # Executive tear sheet markdown source
-│   └── investment_memo.md   # Comprehensive institutional memorandum markdown source
+├── report/                  # Formal submission PDF reports
+│   ├── tear_sheet.pdf       # Deliverable 4: Official executive tear sheet PDF (<5 min review)
+│   └── investment_memo.pdf  # Deliverable 3: Official 9-page investment memorandum PDF
 ├── outputs/                 # Exported publication artifacts
 │   ├── figures/             # 6 High-resolution publication charts (PNG 300 DPI)
 │   └── tables/              # 10 Institutional summary CSV tables
 └── docs/
-    ├── PRESENTATION_DECK.md                # Deliverable 5: 10-12 min live pitch deck & committee Q&A defense
     └── Quant edge 1.0 Final Challenge 1.pdf # Official competition briefing & rubric
 ```
 
@@ -159,7 +164,7 @@ In accordance with Section 8.7 of the QuantEdge Competition Brief:
 ## 📜 Official Deliverables Checklist (Section 7 Compliance)
 - [x] **Deliverable 1: Public/Judge-Accessible GitHub Repository:** Clean, modular structure with documentation and reproducible setup.
 - [x] **Deliverable 2: Interactive Streamlit Application:** Runnable locally with one command: `streamlit run app.py`.
-- [x] **Deliverable 3: 7–15 Page Investment Committee Memorandum:** [report/investment_memo.pdf](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/report/investment_memo.pdf) & [report/investment_memo.md](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/report/investment_memo.md) (12-page comprehensive report covering data cleaning, quantitative methodology, backtesting, stress testing, and assumptions & limitations).
-- [x] **Deliverable 4: 1-Page Executive Tear Sheet:** [report/tear_sheet.pdf](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/report/tear_sheet.pdf) & [report/tear_sheet.md](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/report/tear_sheet.md) (<5 min institutional executive summary).
-- [x] **Deliverable 5: 10–12 Minute Live Pitch Deck & Q&A Defence:** [docs/PRESENTATION_DECK.md](file:///c:/Users/Madhura/OneDrive/Desktop/saifa_quant_round_02/docs/PRESENTATION_DECK.md) (Slide-by-slide script, timing, talking points, and committee Q&A defense).
+- [x] **Deliverable 3: 7–15 Page Investment Committee Memorandum:** [`report/investment_memo.pdf`](report/investment_memo.pdf) (Comprehensive 9-page institutional memorandum covering data cleaning, quantitative methodology, backtesting, stress testing, and assumptions & limitations).
+- [x] **Deliverable 4: 1-Page Executive Tear Sheet:** [`report/tear_sheet.pdf`](report/tear_sheet.pdf) (High-level institutional executive tear sheet for <5 min Board review).
+- [x] **Deliverable 5: Live Pitch Deck & Committee Defence:** Ready for live pitch with presentation deck before the judging panel (for top 5 finalist teams).
 - [x] **Robust Test Suite:** 22 passing unit tests covering all statistical and quantitative layers (`pytest tests/ -v`).
