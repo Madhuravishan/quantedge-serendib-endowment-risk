@@ -68,6 +68,8 @@ from src.stress_test import (
     evaluate_all_stress_scenarios,
     perform_reverse_stress_test,
 )
+from live_engine.live_data_ui import render_live_market_data_tab
+from live_engine.intelligence.intelligence_ui import render_market_intelligence_tab
 
 # ---------------------------------------------------------------------------
 # Streamlit App Configuration
@@ -325,7 +327,7 @@ with col_status:
 # ---------------------------------------------------------------------------
 # Navigation Tabs
 # ---------------------------------------------------------------------------
-tab_tear, tab_data, tab_opt, tab_var, tab_evt, tab_backtest, tab_stress, tab_audit = st.tabs([
+tab_tear, tab_data, tab_opt, tab_var, tab_evt, tab_backtest, tab_stress, tab_live, tab_intel, tab_audit = st.tabs([
     "📋 Executive Tear Sheet",
     "📊 Data & Stationarity",
     "📈 Efficient Frontier",
@@ -333,6 +335,8 @@ tab_tear, tab_data, tab_opt, tab_var, tab_evt, tab_backtest, tab_stress, tab_aud
     "⚡ Extreme Value Theory",
     "🚦 Model Validation & Basel",
     "💥 Stress Tests & Budgeting",
+    "🌐 Live Market Data",
+    "🧠 Market Intelligence Center",
     "📝 Assumptions & Audit",
 ])
 
@@ -1067,7 +1071,19 @@ with tab_stress:
 
 
 # ===========================================================================
-# TAB 8: ASSUMPTIONS & LIMITATIONS AUDIT
+# TAB 8: LIVE MARKET DATA INTERFACE
+# ===========================================================================
+with tab_live:
+    render_live_market_data_tab()
+
+# ===========================================================================
+# TAB 9: MARKET INTELLIGENCE CENTER
+# ===========================================================================
+with tab_intel:
+    render_market_intelligence_tab()
+
+# ===========================================================================
+# TAB 10: ASSUMPTIONS & LIMITATIONS AUDIT
 # ===========================================================================
 with tab_audit:
     st.subheader("Mandatory Institutional Audit: Assumptions, Data Limitations & Tail Risk Conventions")
