@@ -4,13 +4,12 @@ Mandate: The Serendib University Endowment Fund ($10,000,000 AUM)
 QuantEdge 1.0 National STEM Competition - Team 'Pandas Predictors'
 
 Executes all 6 quantitative layers end-to-end, performs model validation,
-and generates the Executive Tear Sheet and Investment Committee Memorandum.
+and exports analytical tables to data/processed/ and outputs/tables/.
 """
 
 import sys
 import time
 import logging
-from pathlib import Path
 
 import pandas as pd
 
@@ -20,8 +19,6 @@ from src.config import (
     SERENDIB_CONSERVATIVE_WEIGHTS,
     DATA_PROCESSED_DIR,
     REPORT_DIR,
-    REPORTS_DIR,
-    OUTPUTS_FIGURES_DIR,
     OUTPUTS_TABLES_DIR,
     TICKERS,
     ASSET_METADATA,
@@ -41,14 +38,6 @@ from src.stress_test import (
     evaluate_hypothetical_stagflation_shock,
     evaluate_all_stress_scenarios,
     perform_reverse_stress_test,
-)
-from src.report_generator import (
-    generate_executive_tearsheet,
-    generate_investment_committee_memo,
-    build_tear_sheet_pdf,
-    build_investment_memo_pdf,
-    export_submission_tables,
-    generate_publication_figures,
 )
 from src.export_static_showcase import export_all_showcase_assets
 
@@ -308,84 +297,6 @@ def run_full_pipeline(force_reload: bool = False):
     print(f"-> Capital Preserved vs 60/40 in Stagflation: +${stagflation['capital_saved_usd']:,.0f}")
     print(f"-> Reverse Stress Circuit Breaker: Requires {reverse_stress['critical_spy_drop']} equity drop + {reverse_stress['critical_agg_drop']} bond drop.")
 
-    # ---------------------------------------------------------------------------
-    # Step 8: Generate Publication Figures First (300 DPI)
-    # ---------------------------------------------------------------------------
-    print("\nGenerating Publication-Ready Figures (300 DPI) in outputs/figures/...")
-    generate_publication_figures(
-        returns_df=md.simple_returns,
-        serendib_ret=serendib_ret,
-        portfolio_suite=suite,
-        var_results=var_results,
-        es_results=es_results,
-        evt_fit_info=evt_fit,
-        crisis_df=crisis_df,
-        outputs_figures_dir=OUTPUTS_FIGURES_DIR,
-    )
-
-    # ---------------------------------------------------------------------------
-    # Step 9: Export Institutional Summary Tables to outputs/tables/
-    # ---------------------------------------------------------------------------
-    print("Exporting Institutional Tables to outputs/tables/...")
-    export_submission_tables(DATA_PROCESSED_DIR, OUTPUTS_TABLES_DIR)
-
-    # ---------------------------------------------------------------------------
-    # Step 10: Generate Formal Institutional Deliverables & PDFs
-    # ---------------------------------------------------------------------------
-    print("\nCompiling Official Institutional Reports & PDF Documents...")
-    tearsheet_path = REPORT_DIR / "tear_sheet.md"
-    memo_path = REPORT_DIR / "investment_memo.md"
-
-    generate_executive_tearsheet(
-        kpis_dict=serendib_kpis,
-        var_df=var_summary_df,
-        es_df=es_summary_df,
-        evt_info=evt_fit,
-        basel_status=hist_rep.basel.zone,
-        stagflation_result=stagflation,
-        output_path=tearsheet_path,
-    )
-
-    generate_investment_committee_memo(
-        kpi_table_df=kpi_df,
-        stationarity_df=md.stationarity_report,
-        var_summary_df=var_summary_df,
-        es_summary_df=es_summary_df,
-        evt_fit_info=evt_fit,
-        backtest_summary_df=backtest_df,
-        budget_df=budget_df,
-        crisis_df=crisis_df,
-        stagflation_dict=stagflation,
-        reverse_stress_dict=reverse_stress,
-        output_path=memo_path,
-    )
-
-    # Compile official PDFs in report/
-    tear_sheet_pdf = REPORT_DIR / "tear_sheet.pdf"
-    memo_pdf = REPORT_DIR / "investment_memo.pdf"
-    build_tear_sheet_pdf(
-        output_pdf_path=tear_sheet_pdf,
-        kpis_dict=serendib_kpis,
-        var_summary_df=var_summary_df,
-        es_summary_df=es_summary_df,
-        evt_fit_info=evt_fit,
-        basel_status=hist_rep.basel.zone,
-        stagflation_dict=stagflation,
-    )
-    build_investment_memo_pdf(
-        output_pdf_path=memo_pdf,
-        kpi_table_df=kpi_df,
-        stationarity_df=md.stationarity_report,
-        var_summary_df=var_summary_df,
-        es_summary_df=es_summary_df,
-        evt_fit_info=evt_fit,
-        backtest_summary_df=backtest_df,
-        budget_df=budget_df,
-        crisis_df=crisis_df,
-        stagflation_dict=stagflation,
-        reverse_stress_dict=reverse_stress,
-    )
-
     # Export standalone interactive HTML charts and mirror PDFs to docs/ for GitHub Pages
     try:
         export_all_showcase_assets()
@@ -396,11 +307,8 @@ def run_full_pipeline(force_reload: bool = False):
     print("=" * 80)
     print(f"  QUANT ENGINE PIPELINE COMPLETED SUCCESSFULLY IN {elapsed:.1f}s")
     print(f"  Deliverables Ready in report/ and outputs/:")
-    print(f"  - Executive Tear Sheet (PDF): {tear_sheet_pdf}")
-    print(f"  - Investment Committee Memo (PDF): {memo_pdf}")
-    print(f"  - Executive Tear Sheet (Markdown): {tearsheet_path}")
-    print(f"  - Investment Committee Memo (Markdown): {memo_path}")
-    print(f"  - Publication Figures: {OUTPUTS_FIGURES_DIR}")
+    print(f"  - Executive Tear Sheet (PDF): {REPORT_DIR / 'tear_sheet.pdf'}")
+    print(f"  - Investment Committee Memo (PDF): {REPORT_DIR / 'investment_memo.pdf'}")
     print(f"  - Institutional Tables: {OUTPUTS_TABLES_DIR}")
     print(f"  - Interactive Streamlit Dashboard: 'streamlit run app.py'")
     print("=" * 80)

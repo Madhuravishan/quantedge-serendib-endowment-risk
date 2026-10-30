@@ -27,9 +27,6 @@ from src.config import (
     HYPOTHETICAL_STAGFLATION_SHOCKS,
     TRADING_DAYS_PER_YEAR,
 )
-
-# Explicit annual trading frequency constraint
-TRADING_DAYS_PER_YEAR: int = 252
 from src.data_loader import load_market_dataset
 from src.portfolio_opt import (
     compute_portfolio_return_series,
@@ -202,8 +199,8 @@ def get_cached_random_portfolios(returns_df):
 
 
 @st.cache_data(show_spinner=False)
-def get_cached_backtest_suite(ret_series):
-    return run_all_models_backtest_suite(ret_series, confidence_level=0.99, estimation_window=500, out_of_sample_start="2024-01-01")
+def get_cached_backtest_suite(ret_series, oos_start_str="2024-01-01"):
+    return run_all_models_backtest_suite(ret_series, confidence_level=0.99, estimation_window=500, out_of_sample_start=oos_start_str)
 
 
 # Load data
@@ -235,6 +232,27 @@ with st.sidebar:
         index=2,
         format_func=lambda x: f"{int(x * 100)}% Confidence",
     )
+
+    st.markdown("---")
+    var_method_choice = st.selectbox(
+        "Primary VaR Methodology",
+        options=[
+            "Historical Simulation",
+            "Parametric Gaussian",
+            "Parametric Student-t",
+            "Monte Carlo (10,000 Paths)",
+            "Extreme Value Theory (EVT-POT)",
+        ],
+        index=0,
+    )
+
+    backtest_start_date = st.date_input(
+        "Backtest Out-of-Sample Start Date",
+        value=pd.to_datetime("2024-01-01").date(),
+        min_value=md.prices.index[505].date(),
+        max_value=md.prices.index[-30].date(),
+    )
+    oos_start_str = pd.to_datetime(backtest_start_date).strftime("%Y-%m-%d")
 
     st.markdown("---")
     st.subheader("Asset Allocation Presets")
@@ -446,19 +464,19 @@ with tab_tear:
 
         fig_wealth.update_layout(
             template="plotly_dark",
-            height=540,
+            height=520,
             title=dict(
-                text="<b>Cumulative Endowment Wealth ($ USD) & Underwater Drawdown Profile</b>",
+                text="<b>Cumulative Endowment Wealth ($ USD)</b>",
                 y=0.98,
                 x=0.5,
                 xanchor="center",
                 font=dict(size=14, color="#f8fafc"),
             ),
-            margin=dict(t=85, b=40, l=50, r=30),
+            margin=dict(t=75, b=40, l=50, r=30),
             legend=dict(
                 orientation="h",
                 yanchor="bottom",
-                y=1.02,
+                y=1.14,
                 xanchor="center",
                 x=0.5,
                 bgcolor="rgba(15,23,42,0.85)",
@@ -772,6 +790,37 @@ with tab_var:
         st.markdown("#### Expected Shortfall & Tail Severity Matrix")
         st.dataframe(es_df, use_container_width=True)
 
+    # Side-by-Side Unified VaR, ES & EVT Comparison Matrix & Chart
+    evt_suite_map, _, evt_suite_df = run_comprehensive_evt_suite(port_ret, aum=aum)
+    unified_rows = []
+    for c_lvl in [0.90, 0.95, 0.99]:
+        v_obj = var_map[c_lvl]
+        e_obj = es_map[c_lvl]
+        evt_obj = evt_suite_map[c_lvl]
+        unified_rows.append({
+            "Confidence Level": f"{int(c_lvl*100)}%",
+            "Historical VaR": f"{v_obj.historical_var*100:.2f}% (${v_obj.historical_var*aum:,.0f})",
+            "Parametric Gaussian VaR": f"{v_obj.parametric_gaussian_var*100:.2f}% (${v_obj.parametric_gaussian_var*aum:,.0f})",
+            "Student-t VaR": f"{v_obj.parametric_student_t_var*100:.2f}% (${v_obj.parametric_student_t_var*aum:,.0f})",
+            "Monte Carlo VaR": f"{v_obj.monte_carlo_var*100:.2f}% (${v_obj.monte_carlo_var*aum:,.0f})",
+            "EVT-POT VaR (GPD)": f"{evt_obj.evt_var*100:.2f}% (${evt_obj.evt_var*aum:,.0f})",
+            "Historical ES (CVaR)": f"{e_obj.es_historical*100:.2f}% (${e_obj.es_historical*aum:,.0f})",
+            "EVT-POT ES (GPD)": f"{evt_obj.evt_es*100:.2f}% (${evt_obj.evt_es*aum:,.0f})",
+        })
+    st.markdown(f"#### Unified Side-by-Side VaR, ES & EVT Matrix (Primary Method: {var_method_choice})")
+    st.dataframe(pd.DataFrame(unified_rows), use_container_width=True, hide_index=True)
+
+    fig_side = go.Figure()
+    c_labels = ["90% Confidence", "95% Confidence", "99% Confidence"]
+    fig_side.add_trace(go.Bar(name="Gaussian VaR", x=c_labels, y=[var_map[c].parametric_gaussian_var*100 for c in [0.90, 0.95, 0.99]], marker_color="#94a3b8"))
+    fig_side.add_trace(go.Bar(name="Historical VaR", x=c_labels, y=[var_map[c].historical_var*100 for c in [0.90, 0.95, 0.99]], marker_color="#38bdf8"))
+    fig_side.add_trace(go.Bar(name="Student-t VaR", x=c_labels, y=[var_map[c].parametric_student_t_var*100 for c in [0.90, 0.95, 0.99]], marker_color="#818cf8"))
+    fig_side.add_trace(go.Bar(name="EVT-POT VaR", x=c_labels, y=[evt_suite_map[c].evt_var*100 for c in [0.90, 0.95, 0.99]], marker_color="#f59e0b"))
+    fig_side.add_trace(go.Bar(name="Historical ES (CVaR)", x=c_labels, y=[es_map[c].es_historical*100 for c in [0.90, 0.95, 0.99]], marker_color="#f87171"))
+    fig_side.add_trace(go.Bar(name="EVT-POT ES", x=c_labels, y=[evt_suite_map[c].evt_es*100 for c in [0.90, 0.95, 0.99]], marker_color="#ef4444"))
+    fig_side.update_layout(template="plotly_dark", barmode="group", height=380, title="Side-by-Side VaR, Expected Shortfall & EVT-POT Comparison (% 1-Day Loss)", yaxis_title="1-Day Loss (%)", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(15,23,42,0.6)")
+    st.plotly_chart(fig_side, use_container_width=True)
+
     # ---------------------------------------------------------------------------
     # Model Disagreement & Tail Gap Analysis
     # ---------------------------------------------------------------------------
@@ -944,8 +993,17 @@ with tab_backtest:
         "Strictly tested against **Kupiec POF**, **Christoffersen Independence**, and the **Basel Committee Traffic Light Framework**."
     )
 
-    backtest_reports, backtest_summary_df = get_cached_backtest_suite(port_ret)
-    active_rep = backtest_reports["historical"]
+
+    backtest_reports, backtest_summary_df = get_cached_backtest_suite(port_ret, oos_start_str=oos_start_str)
+    method_key_map = {
+        "Historical Simulation": "historical",
+        "Parametric Gaussian": "gaussian",
+        "Parametric Student-t": "student_t",
+        "Monte Carlo (10,000 Paths)": "historical",
+        "Extreme Value Theory (EVT-POT)": "evt",
+    }
+    selected_bt_key = method_key_map.get(var_method_choice, "historical")
+    active_rep = backtest_reports[selected_bt_key]
 
     # Basel Status Banner
     b_zone = active_rep.basel.zone
@@ -967,7 +1025,7 @@ with tab_backtest:
     st.dataframe(backtest_summary_df, use_container_width=True)
 
     # Detailed Breach Timeline
-    _, eval_df = run_rolling_out_of_sample_backtest(port_ret, model_type="historical", confidence_level=conf_level, estimation_window=500, out_of_sample_start="2024-01-01")
+    _, eval_df = run_rolling_out_of_sample_backtest(port_ret, model_type=selected_bt_key, confidence_level=conf_level, estimation_window=500, out_of_sample_start=oos_start_str)
 
     fig_breach = go.Figure()
     fig_breach.add_trace(go.Scatter(x=eval_df.index, y=eval_df["Actual_Return"] * 100.0, name="Out-of-Sample Return", mode="lines", line=dict(color="#64748b", width=1)))

@@ -25,13 +25,13 @@ DATA_PROCESSED_DIR = DATA_DIR / "processed"
 REPORT_DIR = BASE_DIR / "report"
 REPORTS_DIR = REPORT_DIR  # Alias for backward compatibility
 OUTPUTS_DIR = BASE_DIR / "outputs"
-OUTPUTS_FIGURES_DIR = OUTPUTS_DIR / "figures"
+
 OUTPUTS_TABLES_DIR = OUTPUTS_DIR / "tables"
 
 DATA_RAW_DIR.mkdir(parents=True, exist_ok=True)
 DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
-OUTPUTS_FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+
 OUTPUTS_TABLES_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------

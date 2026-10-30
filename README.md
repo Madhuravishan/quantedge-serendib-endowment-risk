@@ -2,6 +2,7 @@
 **Serendib University Endowment Fund ($10,000,000 AUM Mandate) | Team: "Pandas Predictors"**  
 *Organized by the Society of Actuarial and Financial Analytics (SAIFA), Department of Statistics, University of Colombo & CFA Society Sri Lanka*
 
+[![Streamlit App](https://img.shields.io/badge/Live_Streamlit_App-Interactive_Engine-ff4b4b?style=for-the-badge&logo=streamlit)](https://quantedge-serendib-endowment-risk.streamlit.app/)
 [![Live Showcase](https://img.shields.io/badge/Live_Showcase-GitHub_Pages-0284c7?style=for-the-badge&logo=github)](https://madhuravishan.github.io/quantedge-serendib-endowment-risk/)
 [![Basel III Compliance](https://img.shields.io/badge/Basel_III-Green_Zone_(k=3.00x)-10b981?style=for-the-badge&logo=safari)](https://madhuravishan.github.io/quantedge-serendib-endowment-risk/)
 [![Test Suite](https://img.shields.io/badge/Tests-26_Passing_(100%25)-10b981?style=for-the-badge&logo=pytest)](https://github.com/Madhuravishan/quantedge-serendib-endowment-risk/actions)
@@ -10,16 +11,7 @@
 
 ---
 
-> ### 🌐 Executive Portals & Core Submission Deliverables
-> - 🌐 **Live Executive Web Showcase:** [https://madhuravishan.github.io/quantedge-serendib-endowment-risk/](https://madhuravishan.github.io/quantedge-serendib-endowment-risk/)
-> - 📄 **1-Page Executive Tear Sheet (PDF):** [`report/tear_sheet.pdf`](report/tear_sheet.pdf) *(Verified: exactly 1 page)*
-> - 📑 **11-Page Technical Investment Memo (PDF):** [`report/investment_memo.pdf`](report/investment_memo.pdf) *(Verified: 11 pages, strictly within 7–15 limit)*
-> - ⚡ **Interactive Streamlit Web Engine:** [https://quantedge-serendib-endowment-risk.streamlit.app/](https://quantedge-serendib-endowment-risk.streamlit.app/) *(Local execution: `streamlit run app.py`)*
-> - 💻 **GitHub Repository:** [https://github.com/Madhuravishan/quantedge-serendib-endowment-risk](https://github.com/Madhuravishan/quantedge-serendib-endowment-risk)
-
----
-
-## 🏛️ 1. Core Institutional Mandate & Governance
+## 1. Core Institutional Mandate & Governance
 
 The **Serendib University Endowment Fund** is an intergenerational pool of capital established to fund academic operations, endowed professorship chairs, STEM laboratory infrastructure, and student scholarships in perpetuity across macroeconomic regimes.
 
@@ -36,12 +28,12 @@ The **Serendib University Endowment Fund** is an intergenerational pool of capit
 
 ---
 
-## 🛡️ 2. The Drawdown Governance Protocol
+## 2. The Drawdown Governance Protocol
 ### Reconciling the 15.0% Board Limit vs. the -31.05% Empirical 20-Year Lookback
 
 A critical fiduciary question is reconciling the Board’s **15.00% maximum tolerable drawdown threshold ($1,500,000 max dollar loss)** against the portfolio's empirical **-31.05% peak-to-trough maximum drawdown** recorded during the 2008 Lehman Brothers Global Financial Crisis.
 
-> ### 📋 Fiduciary Reconciliation & Governance Mandate
+> ### Fiduciary Reconciliation & Governance Mandate
 > 1. **Operational Risk Budget vs. Unhedged Historical Tail:**  
 >    The Board's **15.00% limit is an active, operational circuit-breaker policy** designed to govern ongoing trading and capital allocation. In contrast, the **-31.05% figure represents an unmanaged, buy-and-hold historical lookback trough** over a 20-year lookback (2006–2026) spanning a 1-in-100-year systemic crisis.
 > 2. **Active Capital Preservation (Circuit-Breaker Defense):**  
@@ -51,13 +43,13 @@ A critical fiduciary question is reconciling the Board’s **15.00% maximum tole
 
 | Governance Tier | Drawdown Threshold | Dollar Loss ($10M AUM) | Operational Status | Mandatory Governance Action |
 | :--- | :---: | :---: | :---: | :--- |
-| **🟢 Tier 1: Normal** | `< 10.0%` | `< $1,000,000` | Normal Policy Execution | Standard allocation execution (35% AGG, 25% SPY, 15% GLD, 10% EFA, 10% XLE, 5% EEM). Routine quarterly rebalancing within $\pm 3.0\%$ corridor tolerance bands. Operational spending distributions disbursed on schedule. |
-| **🟡 Tier 2: Watch** | `10.0% to 15.0%` | `$1,000,000 to $1,500,000` | Warning / Risk Alert | Immediate rebalancing freeze. Convene Emergency Risk Committee alert. Tactical suspension of active equity expansion. Channel bond coupon income strictly to capital defense buffers and spending continuity. |
-| **🔴 Tier 3: Action** | `> 15.0%` | `> $1,500,000` | **Mandatory Circuit Breaker** | Mandatory capital preservation protocol: systematic and orderly de-risking of equity and commodity risk assets into short-term US Treasury Bills (FRED DTB3 / BIL). Convene Emergency Board Meeting within 24 hours to preserve endowment solvency. |
+| **Tier 1: Normal** | `< 10.0%` | `< $1,000,000` | Normal Policy Execution | Standard allocation execution (35% AGG, 25% SPY, 15% GLD, 10% EFA, 10% XLE, 5% EEM). Routine quarterly rebalancing within $\pm 3.0\%$ corridor tolerance bands. Operational spending distributions disbursed on schedule. |
+| **Tier 2: Watch** | `10.0% to 15.0%` | `$1,000,000 to $1,500,000` | Warning / Risk Alert | Immediate rebalancing freeze. Convene Emergency Risk Committee alert. Tactical suspension of active equity expansion. Channel bond coupon income strictly to capital defense buffers and spending continuity. |
+| **Tier 3: Action** | `> 15.0%` | `> $1,500,000` | **Mandatory Circuit Breaker** | Mandatory capital preservation protocol: systematic and orderly de-risking of equity and commodity risk assets into short-term US Treasury Bills (FRED DTB3 / BIL). Convene Emergency Board Meeting within 24 hours to preserve endowment solvency. |
 
 ---
 
-## 🚀 3. Quickstart & One-Command Execution
+## 3. Quickstart & One-Command Execution
 
 ### System Requirements & Prerequisites
 - **Operating System:** Windows 10/11, macOS Monterey 12+, Linux (Ubuntu 20.04+, Debian, RHEL)
@@ -84,14 +76,15 @@ pip install -r requirements.txt
 
 ### 2. Execution Commands
 
-#### A. Run Master Headless Pipeline & Export All Artifacts
-Executes all 6 quantitative layers sequentially, generates high-DPI figures, exports institutional CSV tables, builds official PDF reports, and exports the static interactive showcase:
+#### A. Run Master Headless Pipeline & Export Analytical Tables
+Executes all 6 quantitative layers sequentially, exports institutional CSV analytical tables, and synchronizes interactive showcase assets:
 ```bash
 python run_pipeline.py
 ```
 
 #### B. Launch Interactive Streamlit Web Engine
-Launches the full 8-tab interactive institutional dashboard in your browser (`http://localhost:8501`):
+- **Live Deployed App:** [https://quantedge-serendib-endowment-risk.streamlit.app/](https://quantedge-serendib-endowment-risk.streamlit.app/)
+- **Local One-Command Execution:** Launches the full 8-tab interactive institutional dashboard in your browser (`http://localhost:8501`):
 ```bash
 streamlit run app.py
 ```
@@ -102,15 +95,9 @@ Executes comprehensive mathematical and econometric unit tests:
 pytest tests/ -v
 ```
 
-#### D. Compile Official PDF Reports Direct
-Generates the 1-page Executive Tear Sheet and 11-page Investment Committee Memorandum:
-```bash
-python src/report_generator.py
-```
-
 ---
 
-## 📐 4. 6-Layer Modular Quantitative Architecture
+## 4. 6-Layer Modular Quantitative Architecture
 
 ```text
 quantedge-serendib-endowment-risk/
@@ -119,7 +106,7 @@ quantedge-serendib-endowment-risk/
 │       └── deploy-pages.yml     # Automated GitHub Pages CI/CD deployment workflow
 ├── run_pipeline.py              # Master deterministic headless execution pipeline
 ├── app.py                       # Interactive 8-tab institutional Streamlit web application
-├── requirements.txt             # Strict, reproducible dependency specification (with pypdf)
+├── requirements.txt             # Strict, reproducible dependency specification
 ├── README.md                    # Institutional documentation and audit manual
 ├── AI_DISCLOSURE.md             # Mandatory declaration of AI tools & validation (Section 8.7)
 │
@@ -133,8 +120,7 @@ quantedge-serendib-endowment-risk/
 │   ├── evt_engine.py            # Module 5 (Layer 4): EVT Peaks-Over-Threshold (POT), GPD MLE, MEF/Hill
 │   ├── backtest.py              # Module 6 (Layer 5): Kupiec POF, Christoffersen, Basel Traffic Light
 │   ├── stress_test.py           # Module 7 (Layer 6): Euler risk budgeting, Historical crises, Stagflation
-│   ├── report_generator.py      # Module 8: ReportLab PDF compilation & 300 DPI publication figures
-│   └── export_static_showcase.py# Module 9: Standalone Plotly HTML exporter & docs synchronizer
+│   └── export_static_showcase.py# Module 8: Standalone Plotly HTML exporter & docs synchronizer
 │
 ├── tests/                       # Complete pytest unit test suite (26 passing tests)
 │   ├── conftest.py              # Test fixtures and synthetic data generators
@@ -163,14 +149,11 @@ quantedge-serendib-endowment-risk/
 │   └── processed/               # Cleaned returns, stationarity reports, and EVT diagnostics
 │
 ├── outputs/
-│   ├── figures/                 # 14 publication-grade high-resolution charts (300 DPI)
 │   └── tables/                  # 23 structured institutional CSV analytical tables
 │
 └── report/                      # Official submission deliverables
     ├── tear_sheet.pdf           # Deliverable 4: Official 1-Page Executive Tear Sheet PDF
-    ├── investment_memo.pdf      # Deliverable 3: Official 11-Page Technical Investment Memo PDF
-    ├── EXECUTIVE_TEARSHEET.md   # Markdown edition of Executive Tear Sheet
-    └── INVESTMENT_COMMITTEE_MEMORANDUM.md # Markdown edition of Investment Memo
+    └── investment_memo.pdf      # Deliverable 3: Official 11-Page Technical Investment Memo PDF
 ```
 
 ### The 6 Quantitative Layers
@@ -204,7 +187,7 @@ quantedge-serendib-endowment-risk/
 
 ---
 
-## 📊 5. Summary of Quantitative Findings & Empirical Tables
+## 5. Summary of Quantitative Findings & Empirical Tables
 
 ### Strategic Asset Allocation: "Serendib Conservative"
 Selected as the optimal fiduciary choice to satisfy the 7.00% CAGR hurdle while defending the 15% drawdown limit:
@@ -259,7 +242,7 @@ Selected as the optimal fiduciary choice to satisfy the 7.00% CAGR hurdle while 
 
 ---
 
-## 🤖 6. AI Policy Disclosure & Compliance (Section 8.7)
+## 6. AI Policy Disclosure & Compliance (Section 8.7)
 
 In strict accordance with **Section 8.7 of the QuantEdge 1.0 Final Challenge Official Rules**:
 - **AI Tooling Utilized:** Google Antigravity Agentic IDE & Gemini 3.8 Flash.
@@ -268,20 +251,6 @@ In strict accordance with **Section 8.7 of the QuantEdge 1.0 Final Challenge Off
   - Every mathematical formula (Markowitz QP matrix formulation, Cholesky factorization, Pickands-Balkema-de Haan POT derivation, Kupiec likelihood ratio test, Christoffersen transition probability matrices, and Euler homogenous function theorem) was manually derived, reviewed, and cross-verified by team members against academic source literature.
   - All strategic asset allocation decisions, drawdown governance policies, and committee memorandums reflect the original intellectual property and fiduciary judgment of the human analysts.
 - **Full Transparency Record:** A comprehensive audit log of AI interactions and human verification controls is published in [`AI_DISCLOSURE.md`](AI_DISCLOSURE.md).
-
----
-
-## 📜 7. QuantEdge 1.0 Submission Deliverables Matrix
-
-| Rubric Deliverable | Verification Status | Deliverable Path / Location | Technical Details |
-| :--- | :---: | :--- | :--- |
-| **Deliverable 1: Public GitHub Repository** | ✅ Verified | [GitHub Repository](https://github.com/Madhuravishan/quantedge-serendib-endowment-risk) | Clean directory layout (`src/`, `tests/`, `outputs/`, `report/`, `docs/`, `data/`) |
-| **Deliverable 2: Interactive Streamlit App** | ✅ Verified | [`app.py`](app.py) | 8 comprehensive tabs; verified via `streamlit run app.py` |
-| **Deliverable 3: 7–15 Page Investment Memo** | ✅ Verified | [`report/investment_memo.pdf`](report/investment_memo.pdf) | **Exactly 11 pages** (Verified via `pypdf`, strictly within 7–15 limit) |
-| **Deliverable 4: 1-Page Executive Tear Sheet** | ✅ Verified | [`report/tear_sheet.pdf`](report/tear_sheet.pdf) | **Exactly 1 page** (High-level institutional tear sheet for Board review) |
-| **Deliverable 5: Finalist Pitch Readiness** | ✅ Verified | Finalist Deck & Live Showcase | Fully prepared for committee defense before the competition panel |
-| **Executive Web Showcase (GitHub Pages)** | ✅ Verified | [GitHub Pages Portal](https://madhuravishan.github.io/quantedge-serendib-endowment-risk/) | Standalone Plotly CDN interactive figures & embedded PDF viewer |
-| **Automated Unit Test Suite** | ✅ Verified | [`tests/`](tests/) | **26 of 26 tests passing (100%)** via `pytest tests/ -v` |
 
 ---
 

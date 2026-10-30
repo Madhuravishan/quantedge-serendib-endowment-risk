@@ -126,3 +126,15 @@ scratch/
 temp/
 tmp/
 list.txt
+
+
+# ------------------------------------------------------------------------------
+# 10. Local Documentation Generators, PNG Figures, Report MDs & Challenge PDF
+# ------------------------------------------------------------------------------
+src/report_generator.py
+outputs/figures/
+*.png
+report/*.md
+docs/Quant edge 1.0 Final Challenge 1.pdf
+*Final Challenge*.pdf
+*.zip

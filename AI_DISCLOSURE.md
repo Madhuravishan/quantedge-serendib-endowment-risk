@@ -1,4 +1,4 @@
-# 🤖 AI & Coding Assistant Disclosure (Section 8.7 Compliance)
+# AI & Coding Assistant Disclosure (Section 8.7 Compliance)
 
 **Competition:** QuantEdge 1.0 Final Challenge — National STEM Quantitative Investment Research Competition  
 **Organizers:** Society of Actuarial and Financial Analytics (SAIFA, University of Colombo) & CFA Society Sri Lanka  
