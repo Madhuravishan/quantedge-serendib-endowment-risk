@@ -11,7 +11,6 @@
 ---
 
 > ### 🌐 Executive Portals & Core Submission Deliverables
-> - 🌐 **Live Executive Web Showcase:** [https://madhuravishan.github.io/quantedge-serendib-endowment-risk/](https://madhuravishan.github.io/quantedge-serendib-endowment-risk/)
 > - 📄 **1-Page Executive Tear Sheet (PDF):** [`report/tear_sheet.pdf`](report/tear_sheet.pdf) *(Verified: exactly 1 page)*
 > - 📑 **11-Page Technical Investment Memo (PDF):** [`report/investment_memo.pdf`](report/investment_memo.pdf) *(Verified: 11 pages, strictly within 7–15 limit)*
 > - ⚡ **Interactive Streamlit Web Engine:** [https://quantedge-serendib-endowment-risk.streamlit.app/](https://quantedge-serendib-endowment-risk.streamlit.app/) *(Local execution: `streamlit run app.py`)*
