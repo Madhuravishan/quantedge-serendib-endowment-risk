@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages Showcase
+name: Deploy Static Showcase to Pages
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload Artifacts from docs
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'docs/'
@@ -35,3 +35,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
