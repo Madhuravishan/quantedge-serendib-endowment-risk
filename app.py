@@ -27,6 +27,9 @@ from src.config import (
     HYPOTHETICAL_STAGFLATION_SHOCKS,
     TRADING_DAYS_PER_YEAR,
 )
+
+# Explicit annual trading frequency constraint
+TRADING_DAYS_PER_YEAR: int = 252
 from src.data_loader import load_market_dataset
 from src.portfolio_opt import (
     compute_portfolio_return_series,
@@ -443,19 +446,19 @@ with tab_tear:
 
         fig_wealth.update_layout(
             template="plotly_dark",
-            height=520,
+            height=540,
             title=dict(
-                text="<b>Cumulative Endowment Wealth ($ USD)</b>",
+                text="<b>Cumulative Endowment Wealth ($ USD) & Underwater Drawdown Profile</b>",
                 y=0.98,
                 x=0.5,
                 xanchor="center",
                 font=dict(size=14, color="#f8fafc"),
             ),
-            margin=dict(t=75, b=40, l=50, r=30),
+            margin=dict(t=85, b=40, l=50, r=30),
             legend=dict(
                 orientation="h",
                 yanchor="bottom",
-                y=1.14,
+                y=1.02,
                 xanchor="center",
                 x=0.5,
                 bgcolor="rgba(15,23,42,0.85)",

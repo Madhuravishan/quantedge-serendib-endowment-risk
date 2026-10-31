@@ -333,8 +333,8 @@ def run_full_pipeline(force_reload: bool = False):
     # Step 10: Generate Formal Institutional Deliverables & PDFs
     # ---------------------------------------------------------------------------
     print("\nCompiling Official Institutional Reports & PDF Documents...")
-    tearsheet_path = REPORT_DIR / "EXECUTIVE_TEARSHEET.md"
-    memo_path = REPORT_DIR / "INVESTMENT_COMMITTEE_MEMORANDUM.md"
+    tearsheet_path = REPORT_DIR / "tear_sheet.md"
+    memo_path = REPORT_DIR / "investment_memo.md"
 
     generate_executive_tearsheet(
         kpis_dict=serendib_kpis,
